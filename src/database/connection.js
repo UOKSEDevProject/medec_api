@@ -1,13 +1,11 @@
 import mongoose from "mongoose";
 import {config} from "../config.js";
 
-const databaseURL = `mongodb+srv://${config.MONGO_USRNAME}:${config.MONGO_PWD}@${config.MONGO_CLUSTER}.biq7x.mongodb.net/?retryWrites=true&w=majority`;
+const databaseURL = `mongodb+srv://${config.MONGO_USRNAME}:${config.MONGO_PWD}@${config.MONGO_CLUSTER}.biq7x.mongodb.net/${config.MONGO_DB_NAME}?retryWrites=true&w=majority`;
 
-export const connectDatabase = async () => {
-    try {
-        await mongoose.connect(databaseURL);
-        console.log("Connected to the database");
-    } catch (e) {
-        console.log(e);
-    }
+export const connectDatabase =  () => {
+    mongoose.connect(databaseURL);
+    mongoose.connection
+        .once('open', () => console.log('Connected to the database'))
+        .on('error', error => console.log(error));
 }
