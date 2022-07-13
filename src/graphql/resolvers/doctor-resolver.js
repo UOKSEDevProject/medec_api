@@ -4,7 +4,7 @@ import {SessionModel} from "../../database/models/session-model.js";
 export const doctorResolver = {
     Query: {
         getDoctors: async () => {
-            let doctors = await DoctorModel.find(); // There is a issue in this function [ Charith ]
+            let doctors = await DoctorModel.find();
             return doctors;
         },
         getDoctorById: async (_, args) => {
@@ -26,7 +26,6 @@ export const doctorResolver = {
         getDoctor: async (_, args) => {
             let doctor = await DoctorModel.findById(args.id)
             let sessions = await SessionModel.find({dctId: args.id})
-            console.log(sessions);
             return doctor;
         }
     },

@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 export const DoctorSchema = new mongoose.Schema({
+    _id:{
+        type: mongoose.SchemaTypes.String,
+        required: true,
+    },
     name: {
         type: mongoose.SchemaTypes.String,
         required: true,
@@ -25,4 +29,8 @@ export const DoctorSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.String,
         required: true,
     },
+    address: {
+        type: mongoose.SchemaTypes.String,
+        required: true,
+    }
 });
