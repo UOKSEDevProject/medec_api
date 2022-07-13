@@ -7,6 +7,11 @@ export const sessionDefs = apollo.gql `
     
     type Mutation {
         addSession (session: SessionArgs!): Session
+        updateSession (sessionId: String!): Session
+    }
+    
+    type Subscription {
+        sessionListener: Session
     }
     
     type Session {
