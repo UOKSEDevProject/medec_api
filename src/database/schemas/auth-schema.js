@@ -1,20 +1,20 @@
 import mongoose from "mongoose";
 
-export const ChanCentersSchema = new mongoose.Schema({
-    address: {
+export const AuthSchema = new mongoose.Schema({
+    usrName: {
         type: mongoose.SchemaTypes.String,
-        required: true
+        required: true,
     },
-    name: {
+    pwd: {
         type: mongoose.SchemaTypes.String,
-        required: true
+        required: true,
     },
-    cntNo: {
+    type: {
         type: mongoose.SchemaTypes.String,
-        required: true
+        required: true,
     },
-    logoUrl: {
+    usrId: {
         type: mongoose.SchemaTypes.String,
-        required: true
-    }
+        required: true,
+    },
 });

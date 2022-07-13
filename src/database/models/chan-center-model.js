@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import {ChanCentersSchema} from "../schemas/chan-centers-schema.js";
+import {ChanCenterSchema} from "../schemas/chan-center-schema.js";
 
 const collectionName = 'chan_centers';
 
-export const ChanCenterModel = mongoose.model(collectionName, ChanCentersSchema);
+export const ChanCenterModel = mongoose.model(collectionName, ChanCenterSchema);
