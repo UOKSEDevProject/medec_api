@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const AptsSchema =new mongoose.Schema({
+const AptsSchema = new mongoose.Schema({
     aptNo: {
         type: mongoose.SchemaTypes.Number,
         required: true,

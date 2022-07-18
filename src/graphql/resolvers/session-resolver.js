@@ -1,5 +1,15 @@
 import {SessionModel} from "../../database/models/session-model.js";
 import {apolloServerConnection} from "../../apollo-server-connection.js";
+import {withFilter} from "graphql-subscriptions";
+
+let createListerCallback = (data) => {
+    apolloServerConnection.pubsub.publish("SESSION_LISTENER", data.fullDocument);
+};
+
+let startCollectionListener = () => {
+    let pipeline = [{'$match': {'operationType': 'update'}}];
+    let changeStream = SessionModel.watch(pipeline, {fullDocument: "updateLookup"}).on('change', createListerCallback);
+};
 
 export const sessionResolver = {
     Query: {
@@ -11,20 +21,42 @@ export const sessionResolver = {
 
     Mutation: {
         updateSession: async (_, args) => {
-            let findSession = await  SessionModel.findById(args.sessionId);
-            findSession.totApts = Math.floor(Math.random() * 10);
-            apolloServerConnection.pubsub.publish("SESSION_LISTENER", {sessionListener: findSession});
-            return findSession;
+            let updatedSession = await SessionModel.findByIdAndUpdate(args.sessionId, args.session, {new: true});
+
+            return updatedSession;
+        },
+
+        createSession: async (_, args) => {
+            let session = await SessionModel.create({
+                dctId: args.session.dctId,
+                chId: args.session.chId,
+                strTime: args.session.strTime,
+                date: args.session.date,
+                maxApts: args.session.maxApts,
+                totApts: args.session.totApts,
+                curAptNo: args.session.curAptNo,
+                apts: args.session.apts
+            });
+
+            return session;
         }
     },
 
     Subscription: {
         sessionListener: {
-            subscribe: () => apolloServerConnection.pubsub.asyncIterator(["SESSION_LISTENER"]),
+            resolve: (payload) => {
+                return payload
+            },
+
+            subscribe: withFilter(
+                () => {
+                    startCollectionListener();
+                    return apolloServerConnection.pubsub.asyncIterator(["SESSION_LISTENER"])
+                },
+                (payload, args) => {
+                    return args.sessionId === payload._id.valueOf();
+                }
+            )
         }
     }
 }
-
-
-// [Ovindu]
-// https://www.apollographql.com/docs/apollo-server/data/subscriptions/#subscriptions-with-additional-middleware
