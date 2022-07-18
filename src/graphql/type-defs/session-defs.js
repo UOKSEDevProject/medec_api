@@ -6,12 +6,14 @@ export const sessionDefs = apollo.gql `
     }
     
     type Mutation {
-        addSession (session: SessionArgs!): Session
-        updateSession (sessionId: String!): Session
+        createSession (session: SessionArgs!): Session
+        updateSession (sessionId: String!, session: SessionUpdateArgs!): Session
+        createApt (sessionId: String!, aptArgs: AppointmentArgs!): Session
+        updateAptSts (sessionId: String!, aptId: String!, sts: String!): Session
     }
     
     type Subscription {
-        sessionListener: Session
+        sessionListener (sessionId: String!): Session
     }
     
     type Session {
@@ -42,5 +44,31 @@ export const sessionDefs = apollo.gql `
          maxApts: Int!
          totApts: Int!
          curAptNo: Int!
+         apts: [AppointmentArgs]!
+    }
+    
+    input AppointmentArgs {
+         pId: String!
+         pName: String!
+         activeSt: String!
+         aptNo: Int!
+    }
+    
+    input SessionUpdateArgs {
+         dctId: String
+         chId: String
+         strTime: String
+         date: String
+         maxApts: Int
+         totApts: Int
+         curAptNo: Int
+         apts: [AppointmentUpdateArgs]
+    }
+    
+    input AppointmentUpdateArgs {
+         pId: String
+         pName: String
+         activeSt: String
+         aptNo: Int
     }
 `
