@@ -23,7 +23,7 @@ async function startApolloServer() {
 
     const wsServer = new WebSocketServer({
         server: httpServer,
-        path: "/graphql",
+        path: '/subscriptions',
     });
 
     const server = new ApolloServer({
@@ -43,7 +43,7 @@ async function startApolloServer() {
     server.applyMiddleware({app});
 
     httpServer.listen(config.SERVER_PORT, () => {
-        console.log(`Apollo Server on http://localhost:$${config.SERVER_PORT}${server.graphqlPath}`);
+        console.log(`Apollo Server on http://localhost:${config.SERVER_PORT}${server.graphqlPath}`);
     });
 }
 
