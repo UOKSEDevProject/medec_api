@@ -2,13 +2,19 @@ import {SessionModel} from "../../database/models/session-model.js";
 import {apolloServerConnection} from "../../apollo-server-connection.js";
 import {withFilter} from "graphql-subscriptions";
 
+let changeStream = undefined;
+let pipeline = undefined;
+
 let createListerCallback = (data) => {
     apolloServerConnection.pubsub.publish("SESSION_LISTENER", data.fullDocument);
 };
 
 let startCollectionListener = () => {
-    let pipeline = [{'$match': {'operationType': 'update'}}];
-    let changeStream = SessionModel.watch(pipeline, {fullDocument: "updateLookup"}).on('change', createListerCallback);
+    pipeline = [{'$match': {'operationType': 'update'}}];
+
+    if (!changeStream) {
+        changeStream = SessionModel.watch(pipeline, {fullDocument: 'updateLookup'}).on('change', createListerCallback);
+    }
 };
 
 export const sessionResolver = {
@@ -51,7 +57,7 @@ export const sessionResolver = {
             subscribe: withFilter(
                 () => {
                     startCollectionListener();
-                    return apolloServerConnection.pubsub.asyncIterator(["SESSION_LISTENER"])
+                    return apolloServerConnection.pubsub.asyncIterator(["SESSION_LISTENER"]);
                 },
                 (payload, args) => {
                     return args.sessionId === payload._id.valueOf();
