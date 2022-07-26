@@ -5,7 +5,15 @@ export const DoctorSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.String,
         required: true,
     },
-    name: {
+    fullName: {
+        type: mongoose.SchemaTypes.String,
+        required: true,
+    },
+    disName:{
+        type: mongoose.SchemaTypes.String,
+        required: true,
+    },
+    nameWithInitials:{
         type: mongoose.SchemaTypes.String,
         required: true,
     },

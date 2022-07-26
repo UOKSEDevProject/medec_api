@@ -5,7 +5,7 @@ export const doctorDefs = apollo.gql`
         getDoctors: [Doctor] 
         getDoctor (id: String!): Doctor
         getDoctorById (id: String!): Doctor
-        searchDoctors (name: String!, category: String): [Doctor]
+        searchDoctors (fullName: String!, category: String): [Doctor]
     }
     
     type Mutation {
@@ -14,7 +14,9 @@ export const doctorDefs = apollo.gql`
     
     type Doctor {
          _id: String!
-         name: String!
+         fullName: String!
+         disName: String!
+         nameWithInitials: String!
          cntNo: String!
          address: String!
          spec: String!
@@ -25,7 +27,9 @@ export const doctorDefs = apollo.gql`
     
     input DoctorArgs {
          _id:String!
-         name: String!
+         fullName: String!
+         disName: String!
+         nameWithInitials: String!
          cntNo: String!
          address: String!
          spec: String!
