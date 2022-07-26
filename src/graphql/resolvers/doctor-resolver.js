@@ -14,10 +14,10 @@ export const doctorResolver = {
         searchDoctors: async (_, args) => {
             let doctors;
             if (args.category === undefined) {
-                doctors = await DoctorModel.find({name: {$regex: new RegExp(`${args.name}`), $options: 'i'}})
+                doctors = await DoctorModel.find({fullName: {$regex: new RegExp(`${args.fullName}`), $options: 'i'}})
             } else {
                 doctors = await DoctorModel.find({
-                    name: {$regex: new RegExp(`${args.name}`), $options: 'i'},
+                    fullName: {$regex: new RegExp(`${args.fullName}`), $options: 'i'},
                     spec: args.category
                 },)
             }
@@ -34,7 +34,9 @@ export const doctorResolver = {
         addDoctor: async (_, args) => {
             let doctor = {
                 _id: args.doctor._id,
-                name: args.doctor.name,
+                fullName: args.doctor.fullName,
+                disName: args.doctor.disName,
+                nameWithInitials:args.doctor.nameWithInitials,
                 cntNo: args.doctor.cntNo,
                 address: args.doctor.address,
                 spec: args.doctor.spec,

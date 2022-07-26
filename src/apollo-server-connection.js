@@ -23,7 +23,7 @@ async function startApolloServer() {
 
     const wsServer = new WebSocketServer({
         server: httpServer,
-        path: '/subscriptions',
+        path: '/subscriptions'
     });
 
     const server = new ApolloServer({
