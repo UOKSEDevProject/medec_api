@@ -41,7 +41,8 @@ export const sessionResolver = {
                 maxApts: args.session.maxApts,
                 totApts: args.session.totApts,
                 curAptNo: args.session.curAptNo,
-                apts: args.session.apts
+                apts: args.session.apts,
+                status:args.session.status,
             });
 
             return session;
