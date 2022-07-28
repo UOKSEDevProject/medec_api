@@ -5,7 +5,48 @@ export const doctorResolver = {
     Query: {
         getDoctors: async () => {
             let doctors = await DoctorModel.find();
-            return doctors;
+            let finalDoctors = doctors.map ( doc=> ({
+                _id : doc._id,
+                disName: doc.disName,
+                spec:doc.spec,
+                prfImgUrl: doc.prfImgUrl
+            }))
+            let sessions = SessionModel.aggregate(
+                [
+                    // First step is to extract the "friends" field to work with the values
+                    {
+                        $unwind: "$friends"
+                    },
+                    // Lookup all the linked friends from the User collection
+                    {
+                        $lookup:
+                            {
+                                from: "User",
+                                localField: "friends",
+                                foreignField: "_id",
+                                as: "friendsData"
+                            }
+                    },
+                    // Sort the results by age
+                    {
+                        $sort: { 'friendsData.age': 1 }
+                    },
+                    // Get the results into a single array
+                    {
+                        $unwind: "$friendsData"
+                    },
+                    // Group the friends by user id
+                    {
+                        $group:
+                            {
+                                _id: "$_id",
+                                friends: { $push: "$friends" },
+                                friendsData: { $push: "$friendsData" }
+                            }
+                    }
+                ]
+            )
+            return finalDoctors;
         },
         getDoctorById: async (_, args) => {
             let doctor = await DoctorModel.findById(args.id);
@@ -14,10 +55,10 @@ export const doctorResolver = {
         searchDoctors: async (_, args) => {
             let doctors;
             if (args.category === undefined) {
-                doctors = await DoctorModel.find({fullName: {$regex: new RegExp(`${args.fullName}`), $options: 'i'}})
+                doctors = await DoctorModel.find({disName: {$regex: new RegExp(`${args.searchValue}`), $options: 'i'}})
             } else {
                 doctors = await DoctorModel.find({
-                    fullName: {$regex: new RegExp(`${args.fullName}`), $options: 'i'},
+                    disName: {$regex: new RegExp(`${args.searchValue}`), $options: 'i'},
                     spec: args.category
                 },)
             }
@@ -36,7 +77,7 @@ export const doctorResolver = {
                 _id: args.doctor._id,
                 fullName: args.doctor.fullName,
                 disName: args.doctor.disName,
-                nameWithInitials:args.doctor.nameWithInitials,
+                nameWithInitials: args.doctor.nameWithInitials,
                 cntNo: args.doctor.cntNo,
                 address: args.doctor.address,
                 spec: args.doctor.spec,
