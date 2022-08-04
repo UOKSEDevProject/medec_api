@@ -26,12 +26,6 @@ export const sessionResolver = {
     },
 
     Mutation: {
-        updateSession: async (_, args) => {
-            let updatedSession = await SessionModel.findByIdAndUpdate(args.sessionId, args.session, {new: true});
-
-            return updatedSession;
-        },
-
         createSession: async (_, args) => {
             let session = await SessionModel.create({
                 dctId: args.session.dctId,
@@ -42,10 +36,61 @@ export const sessionResolver = {
                 totApts: args.session.totApts,
                 curAptNo: args.session.curAptNo,
                 apts: args.session.apts,
-                status:args.session.status,
+                status: args.session.status,
             });
 
             return session;
+        },
+
+        updateSession: async (_, args) => {
+            let updatedSession = await SessionModel.findByIdAndUpdate(args.sessionId, args.session, {new: true});
+
+            return updatedSession;
+        },
+
+        createApt: async (_, args) => {
+            let appointment = {
+                pId: args.aptArgs.pId,
+                pName: args.aptArgs.pName,
+                activeSt: args.aptArgs.activeSt,
+                aptNo: args.aptArgs.aptNo
+            }
+
+            let updated = await SessionModel.findOneAndUpdate(
+                {_id: args.sessionId},
+                {
+                    $push: {
+                        apts: appointment,
+                    }
+                },
+                {
+                    new: true,
+                    rawResult: true,
+                }
+            )
+
+            return updated.value;
+        },
+
+        updateAptSts: async (_, args) => {
+            let updated = await SessionModel.findOneAndUpdate(
+                {
+                    _id: args.sessionId,
+                    "apts._id": args.aptId
+                },
+                {
+                    $set: {
+                        "apts.$.activeSt": args.sts,
+                    },
+                    $inc: {curAptNo: 1}
+                },
+                {
+                    new: true,
+                    rawResult: true
+                }
+            )
+
+            return updated.value;
         }
     },
 

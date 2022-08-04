@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const MediHistorySchema =new mongoose.Schema({
+const MediHistorySchema = new mongoose.Schema({
     date: {
         type: mongoose.SchemaTypes.String,
         required: true,
@@ -16,7 +16,15 @@ const MediHistorySchema =new mongoose.Schema({
 });
 
 export const PatientSchema = new mongoose.Schema({
-    name: {
+    fullName: {
+        type: mongoose.SchemaTypes.String,
+        required: true,
+    },
+    disName: {
+        type: mongoose.SchemaTypes.String,
+        required: true,
+    },
+    nameWithInitials: {
         type: mongoose.SchemaTypes.String,
         required: true,
     },
@@ -48,9 +56,5 @@ export const PatientSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.String,
         required: true,
     },
-    mediHis: [
-        {
-            type: MediHistorySchema,
-        },
-    ],
+    mediHis: [MediHistorySchema],
 });
