@@ -2,10 +2,11 @@ import apollo from "apollo-server-express";
 
 export const doctorDefs = apollo.gql`
     type Query { 
-        getDoctors: [Doctor] 
-        getDoctorSessionList (id: String!): DoctorProfile
         getDoctorById (id: String!): Doctor
-        getAvailableDoctors: [AvailableDoctor]
+        getDoctors (searchValue: String, category: String): [AvailableDoctor] 
+        getDoctorSessionList (id: String!): DoctorProfile
+        getDoctorSessionListForChannelCenter (id: String!, chId: String!): ChannelCenterDoctorProfile
+        getAvailableDoctors (searchValue: String, category: String): [AvailableDoctor]
         searchDoctors (searchValue: String!, category: String): [Doctor]
     }
     
@@ -13,7 +14,7 @@ export const doctorDefs = apollo.gql`
         addDoctor (doctor: DoctorArgs!): Doctor
     }
     
-     type Doctor {
+    type Doctor {
          _id:String!
          fullName: String!
          disName: String!
@@ -24,17 +25,26 @@ export const doctorDefs = apollo.gql`
          prfImgUrl: String!
          email: String!
          sex: String!
-  }
+    }
     
     type DoctorProfile {
         _id: String!
         disName: String!
         spec: String!
         prfImgUrl: String!
-        sessions: [ChannelCenterType]!
+        channelCenters : [ChannelCenterSessions]!
     }
     
-    type ChannelCenterType {
+    type ChannelCenterDoctorProfile {
+        _id: String!
+        disName: String!
+        spec: String!
+        prfImgUrl: String!
+        sessionsList: [ChannelCenterSession]!
+    }
+    
+    type ChannelCenterSessions {
+        _id:String!
         hospitalName: String!
         sessionsList: [ChannelCenterSession]!
     }
@@ -49,10 +59,10 @@ export const doctorDefs = apollo.gql`
     type AvailableDoctor{
          _id: String!
          disName: String!
-         mediCenter: String!
          specialization: String!
          imageSrc: String!
-         status: String!
+         mediCenter: String
+         status: Boolean
     }
     
     input DoctorArgs {
