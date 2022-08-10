@@ -5,6 +5,7 @@ import {DoctorModel} from "../../database/models/doctor-model.js";
 import constants from "../../constants.js";
 import {ChanCenterModel} from "../../database/models/chan-center-model.js";
 import {LabModel} from "../../database/models/lab-model.js";
+import utils from "../../utils/utils.js";
 
 const onLoginCallback = async (resolve, reject, args, authType) => {
     let findUsr = await checkUsrInDB(args);
@@ -12,21 +13,25 @@ const onLoginCallback = async (resolve, reject, args, authType) => {
     if (findUsr && checkTheAuthType(findUsr.type, authType)) {
         await matchThePasswords(resolve, reject, args, findUsr);
     } else {
-        reject('no usr invalid user name password');
+        resolve({authSts: constants.authFail, message: constants.messages.invalidUserNamePassword});
     }
 };
 
 const matchThePasswords = (resolve, reject, args, result) => {
     bcrypt.compare(args.pwd, result.pwd)
-        .then((isPwdMatched) => {
+        .then(async (isPwdMatched) => {
             if (isPwdMatched) {
-                resolve('completed');
+                let data = {usrId: result.usrId, authType: result.type};
+                let token = await utils.createToken(data);
+                let res = {authSts: constants.authSuccess, authType: result.type, usrId: result.usrId, tkn: token, message: constants.messages.authenticationSuccess};
+
+                resolve(res);
             } else {
-                resolve('invalid password');
+                resolve({authSts: constants.authFail, message: constants.messages.invalidUserNamePassword});
             }
         })
         .catch((error) => {
-            reject(' invalid user name password');
+            resolve({authSts: constants.authFail, message: constants.messages.invalidUserNamePassword});
         });
 };
 
@@ -40,7 +45,7 @@ const onRegisterCallback = async (resolve, reject, args, authType) => {
     if (!findUsr) {
         onCreateUserProfile(args, authType, resolve);
     } else {
-        reject('usr already registerd');
+        resolve({authSts: constants.authRegisteredFail, message: constants.messages.userExists});
     }
 };
 
@@ -71,7 +76,7 @@ const onSaveInDB = (args, hash, authType, usrId, resolve) => {
     };
 
     AuthModel.create(newUser).then(() => {
-        resolve('created');
+        resolve({authSts: constants.authRegisteredSuccess, message: constants.messages.registeredSuccessfully});
     });
 };
 
