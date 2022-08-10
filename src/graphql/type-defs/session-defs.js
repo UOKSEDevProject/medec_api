@@ -25,7 +25,6 @@ export const sessionDefs = apollo.gql `
          maxApts: Int!
          totApts: Int!
          curAptNo: Int!
-         status:String!
          apts: [Appointments]!
     }
     
@@ -45,7 +44,6 @@ export const sessionDefs = apollo.gql `
          maxApts: Int!
          totApts: Int!
          curAptNo: Int!
-         status:String!
          apts: [AppointmentArgs]!
     }
     
@@ -64,7 +62,6 @@ export const sessionDefs = apollo.gql `
          maxApts: Int
          totApts: Int
          curAptNo: Int
-         status:String
          apts: [AppointmentUpdateArgs]
     }
     

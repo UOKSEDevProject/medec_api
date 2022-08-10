@@ -51,9 +51,5 @@ export const SessionSchema = new mongoose.Schema({
     apts: {
         type: [AptsSchema],
         required: true
-    },
-    status:{
-        type:mongoose.SchemaTypes.String,
-        required:true
     }
 });

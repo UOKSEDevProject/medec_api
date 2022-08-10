@@ -2,11 +2,9 @@ import apollo from "apollo-server-express";
 
 export const doctorDefs = apollo.gql`
     type Query { 
+        getDoctors: [DoctorAvailability] 
+        getDoctor (id: String!): Doctor
         getDoctorById (id: String!): Doctor
-        getDoctors (searchValue: String, category: String): [AvailableDoctor] 
-        getDoctorSessionList (id: String!): DoctorProfile
-        getDoctorSessionListForChannelCenter (id: String!, chId: String!): ChannelCenterDoctorProfile
-        getAvailableDoctors (searchValue: String, category: String): [AvailableDoctor]
         searchDoctors (searchValue: String!, category: String): [Doctor]
     }
     
@@ -15,54 +13,26 @@ export const doctorDefs = apollo.gql`
     }
     
     type Doctor {
-         _id:String!
-         fullName: String!
-         disName: String!
-         nameWithInitials: String!
-         cntNo: String!
-         address: String!
-         spec: String!
-         prfImgUrl: String!
-         email: String!
-         sex: String!
+         _id: String
+         fullName: String
+         disName: String
+         nameWithInitials: String
+         cntNo: String
+         address: String
+         spec: String
+         prfImgUrl: String
+         email: String
+         sex: String
     }
     
-    type DoctorProfile {
-        _id: String!
-        disName: String!
-        spec: String!
-        prfImgUrl: String!
-        channelCenters : [ChannelCenterSessions]!
-    }
-    
-    type ChannelCenterDoctorProfile {
-        _id: String!
-        disName: String!
-        spec: String!
-        prfImgUrl: String!
-        sessionsList: [ChannelCenterSession]!
-    }
-    
-    type ChannelCenterSessions {
-        _id:String!
-        hospitalName: String!
-        sessionsList: [ChannelCenterSession]!
-    }
-    
-    type ChannelCenterSession{
-        time: String!
-        date: String!
-        appointments: Int!
-        maximumAppointments: Int!
-    }
-    
-    type AvailableDoctor{
-         _id: String!
-         disName: String!
-         specialization: String!
-         imageSrc: String!
-         mediCenter: String
-         status: Boolean
+    type DoctorAvailability{
+         _id: String
+         disName: String
+         spec: String
+         prfImgUrl: String
+         chId: String
+         ch_name: String
+         status: String
     }
     
     input DoctorArgs {

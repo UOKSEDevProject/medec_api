@@ -34,7 +34,12 @@ async function startApolloServer() {
             ApolloServerPluginDrainHttpServer({ httpServer }),
             config.ENVIRONMENT === 'production' ? ApolloServerPluginLandingPageDisabled() : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
             {async serverWillStart() {return {async drainServer() {await serverCleanup.dispose();},};},}
-        ]
+        ],
+        context: ({req}) => {
+            return {
+                authType: '5'
+            }; // req.headers.origin;
+        }
     });
 
     const serverCleanup = useServer({ schema }, wsServer);
