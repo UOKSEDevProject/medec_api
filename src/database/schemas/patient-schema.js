@@ -16,7 +16,15 @@ const MediHistorySchema =new mongoose.Schema({
 });
 
 export const PatientSchema = new mongoose.Schema({
-    name: {
+    fullName: {
+        type: mongoose.SchemaTypes.String,
+        required: true,
+    },
+    disName: {
+        type: mongoose.SchemaTypes.String,
+        required: true,
+    },
+    nameWithInitials: {
         type: mongoose.SchemaTypes.String,
         required: true,
     },
