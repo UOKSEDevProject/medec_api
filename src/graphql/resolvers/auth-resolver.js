@@ -85,16 +85,16 @@ const onCreateHashPassword = (args, authType, usrId, resolve) => {
 
 const onCreateDoctor = async (args, resolve) => {
     let doctor = {
-        _id: 'casdsdopy',
-        fullName: 'args.doctor.fullName',
-        disName: 'args.doctor.disName',
-        nameWithInitials: 'args.doctor.nameWithInitials',
-        cntNo: 'args.doctor.cntN',
-        address: 'args.doctor.address',
-        spec: 'args.doctor.spec',
-        prfImgUrl: 'args.doctor.prfImgUrl',
-        email: 'args.doctor.email',
-        sex: 'args.doctor.sex',
+        _id: args.userArgs.doctorArgs._id,
+        fullName: args.userArgs.doctorArgs.fullName,
+        disName: args.userArgs.doctorArgs.disName,
+        nameWithInitials: args.userArgs.doctorArgs.nameWithInitials,
+        cntNo: args.userArgs.doctorArgs.cntNo,
+        address: args.userArgs.doctorArgs.address,
+        spec: args.userArgs.doctorArgs.spec,
+        prfImgUrl: args.userArgs.doctorArgs.prfImgUrl,
+        email: args.userArgs.doctorArgs.email,
+        sex: args.userArgs.doctorArgs.sex
     };
 
     DoctorModel.create(doctor).then((doctor) => {
@@ -104,10 +104,10 @@ const onCreateDoctor = async (args, resolve) => {
 
 const onCreateChannelCenter = (args, resolve) => {
     let chanCenter = {
-        name: 'args.chanCenter.name',
-        address: 'args.chanCenter.address',
-        logoUrl: 'args.chanCenter.logoUrl',
-        cntNo: 'args.chanCenter.cntNo'
+        name: args.userArgs.chanCenterArgs.name,
+        address: args.userArgs.chanCenterArgs.address,
+        logoUrl: args.userArgs.chanCenterArgs.logoUrl,
+        cntNo: args.userArgs.chanCenterArgs.cntNo
     };
 
     ChanCenterModel.create(chanCenter).then((chanCenter) => {
@@ -117,10 +117,10 @@ const onCreateChannelCenter = (args, resolve) => {
 
 const onCreateLab = (args, resolve) => {
     let lab = {
-        name: 'args.chanCenter.name',
-        logoUrl: 'args.chanCenter.address',
-        cntNo: 'args.chanCenter.logoUrl',
-        address: 'args.chanCenter.cntNo'
+        name: args.userArgs.labArgs.name,
+        logoUrl: args.userArgs.labArgs.logoUrl,
+        cntNo: args.userArgs.labArgs.cntNo,
+        address: args.userArgs.labArgs.address
     };
 
     LabModel.create(lab).then((lab) => {
@@ -130,17 +130,17 @@ const onCreateLab = (args, resolve) => {
 
 const onCreatePatient = (args, resolve) => {
     let patient = {
-        prfImgUrl: 'args.chanCenter.name',
-        address: 'args.chanCenter.address',
-        birthDate: 'args.chanCenter.logoUrl',
-        des: 'args.chanCenter.cntNo',
-        sex: 'args.chanCenter.cntNo',
-        cntNo: 'args.chanCenter.cntNo',
-        bldGrp: 'scskk',
+        prfImgUrl: args.userArgs.patientArgs.prfImgUrl,
+        address: args.userArgs.patientArgs.address,
+        birthDate: args.userArgs.patientArgs.birthDate,
+        des: args.userArgs.patientArgs.des,
+        sex: args.userArgs.patientArgs.sex,
+        cntNo: args.userArgs.patientArgs.cntNo,
+        bldGrp: args.userArgs.patientArgs.bldGrp,
         mediHis: [],
-        disName: 'args.chanCenter.cntNo',
-        fullName: 'args.chanCenter.cntNo',
-        nameWithInitials: 'args.chanCenter.cntNo'
+        disName: args.userArgs.patientArgs.disName,
+        fullName: args.userArgs.patientArgs.fullName,
+        nameWithInitials: args.userArgs.patientArgs.nameWithInitials
     };
 
     PatientModel.create(patient).then((patient) => {
