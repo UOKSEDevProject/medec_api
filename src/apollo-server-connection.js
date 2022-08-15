@@ -1,4 +1,4 @@
-import {ApolloServer} from "apollo-server-express";
+import {ApolloServer, AuthenticationError} from "apollo-server-express";
 import express from "express";
 import * as http from "http";
 import {ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageDisabled, ApolloServerPluginLandingPageLocalDefault} from "apollo-server-core";
@@ -9,6 +9,7 @@ import {WebSocketServer} from "ws";
 import {useServer} from "graphql-ws/lib/use/ws";
 import {makeExecutableSchema} from "@graphql-tools/schema";
 import {PubSub} from "graphql-subscriptions";
+import utils from "./utils/utils.js";
 
 const pubsub = new PubSub();
 
@@ -36,8 +37,17 @@ async function startApolloServer() {
             {async serverWillStart() {return {async drainServer() {await serverCleanup.dispose();},};},}
         ],
         context: ({req}) => {
+            const token = req.headers.authorization || '';
+
+            if (token) {
+                let decode = utils.verifyToken(token, () => {
+                    throw new AuthenticationError('Token Error');
+                });
+            }
+
             return {
-                authType: '5'
+                authType: '5',
+                //tknPayload: decode
             }; // req.headers.origin;
         }
     });
