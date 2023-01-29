@@ -18,7 +18,7 @@ const MediHistorySchema = new mongoose.Schema({
 export const PatientSchema = new mongoose.Schema({
     fullName: {
         type: mongoose.SchemaTypes.String,
-        required: true,
+        required: false,
     },
     disName: {
         type: mongoose.SchemaTypes.String,
@@ -26,15 +26,15 @@ export const PatientSchema = new mongoose.Schema({
     },
     nameWithInitials: {
         type: mongoose.SchemaTypes.String,
-        required: true,
+        required: false,
     },
     prfImgUrl: {
         type: mongoose.SchemaTypes.String,
-        required: true,
+        required: false,
     },
     address: {
         type: mongoose.SchemaTypes.String,
-        required: true,
+        required: false,
     },
     birthDate: {
         type: mongoose.SchemaTypes.String,
@@ -46,7 +46,7 @@ export const PatientSchema = new mongoose.Schema({
     },
     des: {
         type: mongoose.SchemaTypes.String,
-        required: true,
+        required: false,
     },
     sex: {
         type: mongoose.SchemaTypes.String,

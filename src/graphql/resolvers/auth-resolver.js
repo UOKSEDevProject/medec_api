@@ -23,7 +23,13 @@ const matchThePasswords = (resolve, reject, args, result) => {
             if (isPwdMatched) {
                 let data = {usrId: result.usrId, authType: result.type};
                 let token = await utils.createToken(data);
-                let res = {authSts: constants.authSuccess, authType: result.type, usrId: result.usrId, tkn: token, message: constants.messages.authenticationSuccess};
+                let res = {
+                    authSts: constants.authSuccess,
+                    authType: result.type,
+                    usrId: result.usrId,
+                    tkn: token,
+                    message: constants.messages.authenticationSuccess
+                };
 
                 resolve(res);
             } else {
@@ -135,17 +141,12 @@ const onCreateLab = (args, resolve) => {
 
 const onCreatePatient = (args, resolve) => {
     let patient = {
-        prfImgUrl: args.userArgs.patientArgs.prfImgUrl,
-        address: args.userArgs.patientArgs.address,
-        birthDate: args.userArgs.patientArgs.birthDate,
-        des: args.userArgs.patientArgs.des,
-        sex: args.userArgs.patientArgs.sex,
-        cntNo: args.userArgs.patientArgs.cntNo,
-        bldGrp: args.userArgs.patientArgs.bldGrp,
+        birthDate: "23123",
+        sex: "23123",
+        cntNo: "23123",
+        bldGrp: "23123",
         mediHis: [],
-        disName: args.userArgs.patientArgs.disName,
-        fullName: args.userArgs.patientArgs.fullName,
-        nameWithInitials: args.userArgs.patientArgs.nameWithInitials
+        disName: "23123",
     };
 
     PatientModel.create(patient).then((patient) => {
