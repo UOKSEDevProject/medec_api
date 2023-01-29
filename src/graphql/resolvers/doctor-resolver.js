@@ -1,11 +1,29 @@
 import {DoctorModel} from "../../database/models/doctor-model.js";
 import {SessionModel} from "../../database/models/session-model.js";
+import {statusCodes} from "../../constants.js";
+
+let response = {
+    statusCode: null,
+    statusDetails: null,
+    payload: null
+};
 
 export const doctorResolver = {
     Query: {
         getDoctorById: async (_, args) => {
             let doctor = await DoctorModel.findById(args.id);
-            return doctor;
+
+            if (doctor !== null) {
+                response.statusCode = statusCodes.Onsuccess.code;
+                response.statusDetails = statusCodes.Onsuccess.details;
+                response.payload = doctor;
+            } else {
+                response.statusCode = statusCodes.OnNotFound.code;
+                response.statusDetails = statusCodes.OnNotFound.details;
+                response.payload = null;
+            }
+
+            return response;
         },
 
         getDoctors: async (_, args) => {
@@ -167,6 +185,7 @@ export const doctorResolver = {
                             },
                             {
                                 $project: {
+                                    id:"$_id",
                                     time: "$strTime",
                                     date: "$date",
                                     appointments: "$totApts",

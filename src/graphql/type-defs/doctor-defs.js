@@ -2,12 +2,18 @@ import apollo from "apollo-server-express";
 
 export const doctorDefs = apollo.gql`
     type Query { 
-        getDoctorById (id: String!): Doctor
+        getDoctorById (id: String!): Response
         getDoctors (searchValue: String, category: String): [AvailableDoctor] 
         getDoctorSessionList (id: String!): DoctorProfile
         getDoctorSessionListForChannelCenter (id: String!, chId: String!): ChannelCenterDoctorProfile
         getAvailableDoctors (searchValue: String, category: String): [AvailableDoctor]
         searchDoctors (searchValue: String!, category: String): [Doctor]
+    }
+    
+    type Response{
+        statusCode:String!
+        statusDetails: String!,
+        payload: Doctor
     }
     
     type Mutation {
@@ -50,6 +56,7 @@ export const doctorDefs = apollo.gql`
     }
     
     type ChannelCenterSession{
+        id:String!
         time: String!
         date: String!
         appointments: Int!
@@ -76,5 +83,7 @@ export const doctorDefs = apollo.gql`
          prfImgUrl: String!
          email: String!
          sex: String!
-  }
+    }
+    
+   
 `
