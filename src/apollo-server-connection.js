@@ -46,7 +46,7 @@ async function startApolloServer() {
             }
 
             return {
-                authType: '4',
+                authType: '5',
                 //tknPayload: decode
             }; // req.headers.origin;
         }
