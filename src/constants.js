@@ -18,4 +18,22 @@ const constants = {
     }
 };
 
+export const statusCodes = {
+    Onsuccess: {
+        code: "S0000",
+        details: "Success",
+    },
+    onNewRecordCreatedSuccessfully:{
+        code: "S0001",
+        details: "New record created successfully",
+    },
+    OnNotFound: {
+        code: "E0001",
+        details: "Not found"
+    },
+    OnUnknownError: {
+        code: "E1000",
+    }
+}
+
 export default constants;
