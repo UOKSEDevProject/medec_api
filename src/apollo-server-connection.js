@@ -10,6 +10,7 @@ import {useServer} from "graphql-ws/lib/use/ws";
 import {makeExecutableSchema} from "@graphql-tools/schema";
 import {PubSub} from "graphql-subscriptions";
 import utils from "./utils/utils.js";
+import constants from "./constants.js";
 
 const pubsub = new PubSub();
 
