@@ -37,18 +37,21 @@ async function startApolloServer() {
             {async serverWillStart() {return {async drainServer() {await serverCleanup.dispose();},};},}
         ],
         context: ({req}) => {
+            let decode = null;
             const token = req.headers.authorization || '';
 
             if (token) {
-                let decode = utils.verifyToken(token, () => {
+                decode = utils.verifyToken(token, () => {
                     throw new AuthenticationError('Token Error');
                 });
             }
 
             return {
-                authType: '4',
-                //tknPayload: decode
-            }; // req.headers.origin;
+                authType: req.headers.auth_type || constants.authTypePatient,
+                platform_type: req.headers.platform_type || constants.platformWeb,
+                tknPayload: decode,
+                origin: req.headers.origin
+            };
         }
     });
 

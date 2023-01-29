@@ -10,6 +10,9 @@ const constants = {
     authRegisteredSuccess: 12,
     authRegisteredFail: 13,
 
+    platformMobile: 1,
+    platformWeb: 2,
+
     messages: {
         invalidUserNamePassword: 'Invalid User Name or Password',
         authenticationSuccess: 'Login Success',
