@@ -1,6 +1,9 @@
 import {SessionModel} from "../../database/models/session-model.js";
 import {apolloServerConnection} from "../../apollo-server-connection.js";
 import {withFilter} from "graphql-subscriptions";
+import {sessionStatus, statusCodes} from "../../constants.js";
+import {DoctorModel} from "../../database/models/doctor-model.js";
+import {ChanCenterModel} from "../../database/models/chan-center-model.js";
 
 let changeStream = undefined;
 let pipeline = undefined;
@@ -17,6 +20,12 @@ let startCollectionListener = () => {
     }
 };
 
+let response = {
+    statusCode: null,
+    statusDetails: null,
+    payload: null
+};
+
 export const sessionResolver = {
     Query: {
         getSessions: async (_, args) => {
@@ -27,25 +36,82 @@ export const sessionResolver = {
 
     Mutation: {
         createSession: async (_, args) => {
-            let session = await SessionModel.create({
+            let doctor = await DoctorModel.findById(args.session.dctId);
+            let channelCenter = await ChanCenterModel.findById(args.session.chId);
+
+            if (doctor === null || channelCenter === null) {
+                response.statusCode = statusCodes.OnNotFound.code;
+                response.statusDetails = statusCodes.OnNotFound.details;
+                response.payload = null;
+                return response;
+            }
+
+            let sessions = await SessionModel.find({
+                dctId: args.session.dctId,
+                date: args.session.date,
+                strTime: args.session.strTime
+            });
+
+            if (sessions.length !== 0) {
+                response.statusCode = statusCodes.OnConflict.code;
+                response.statusDetails = statusCodes.OnConflict.details;
+                response.payload = sessions[0];
+                return response;
+            }
+
+            const status = sessionStatus.NOT_STARTED;
+            const totApts = 0;
+            const apts = [];
+            const curAptNo = 0;
+
+            let createdSession = await SessionModel.create({
                 dctId: args.session.dctId,
                 chId: args.session.chId,
                 strTime: args.session.strTime,
                 date: args.session.date,
                 maxApts: args.session.maxApts,
-                totApts: args.session.totApts,
-                curAptNo: args.session.curAptNo,
-                apts: args.session.apts,
-                status: args.session.status,
+                totApts: totApts,
+                curAptNo: curAptNo,
+                apts: apts,
+                status: status,
             });
 
-            return session;
+            response.statusCode = statusCodes.Onsuccess.code;
+            response.statusDetails = statusCodes.Onsuccess.details;
+            response.payload = createdSession;
+            return response;
         },
 
         updateSession: async (_, args) => {
             let updatedSession = await SessionModel.findByIdAndUpdate(args.sessionId, args.session, {new: true});
 
-            return updatedSession;
+            if (updatedSession === null) {
+                response.statusCode = statusCodes.OnNotFound.code;
+                response.statusDetails = statusCodes.OnNotFound.details;
+                response.payload = null;
+            } else {
+                response.statusCode = statusCodes.Onsuccess.code;
+                response.statusDetails = statusCodes.Onsuccess.details;
+                response.payload = updatedSession;
+            }
+
+            return response;
+        },
+
+        deleteSession: async (_, args) => {
+            let session = await SessionModel.findOneAndDelete({_id: args.sessionId},);
+
+            if (session === null) {
+                response.statusCode = statusCodes.OnNotFound.code;
+                response.statusDetails = statusCodes.OnNotFound.details;
+                response.payload = null;
+            } else {
+                response.statusCode = statusCodes.Onsuccess.code;
+                response.statusDetails = statusCodes.Onsuccess.details;
+                response.payload = null;
+            }
+
+            return response;
         },
 
         createApt: async (_, args) => {

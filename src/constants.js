@@ -23,7 +23,7 @@ export const statusCodes = {
         code: "S0000",
         details: "Success",
     },
-    onNewRecordCreatedSuccessfully:{
+    onNewRecordCreatedSuccessfully: {
         code: "S0001",
         details: "New record created successfully",
     },
@@ -31,9 +31,20 @@ export const statusCodes = {
         code: "E0001",
         details: "Not found"
     },
+    OnConflict: {
+        code: "E0009",
+        details: "Conflict when creating the record",
+    },
     OnUnknownError: {
         code: "E1000",
-    }
+    },
+
+}
+
+export const sessionStatus = {
+    NOT_STARTED: "not started",
+    ACTIVE: "active",
+    FINISHED: "finished"
 }
 
 export default constants;

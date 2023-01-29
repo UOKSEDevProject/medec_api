@@ -1,13 +1,14 @@
 import apollo from "apollo-server-express";
 
-export const sessionDefs = apollo.gql `
+export const sessionDefs = apollo.gql`
     type Query {
         getSessions: [Session]
     }
     
     type Mutation {
-        createSession (session: SessionArgs!): Session
-        updateSession (sessionId: String!, session: SessionUpdateArgs!): Session
+        createSession (session: SessionArgs!): SessionApiResponse
+        updateSession (sessionId: String!, session: SessionUpdateArgs!): SessionApiResponse
+        deleteSession (sessionId: String!): SessionApiResponse
         createApt (sessionId: String!, aptArgs: AppointmentArgs!): Session
         updateAptSts (sessionId: String!, aptId: String!, sts: String!): Session
     }
@@ -16,6 +17,12 @@ export const sessionDefs = apollo.gql `
         sessionListener (sessionId: String!): Session
     }
     
+    type SessionApiResponse{
+        statusCode:String!
+        statusDetails: String!,
+        payload: Session
+    }
+  
     type Session {
          _id: String!
          dctId: String!
@@ -43,10 +50,6 @@ export const sessionDefs = apollo.gql `
          strTime: String!
          date: String!
          maxApts: Int!
-         totApts: Int!
-         curAptNo: Int!
-         status:String!
-         apts: [AppointmentArgs]!
     }
     
     input AppointmentArgs {
