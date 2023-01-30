@@ -172,7 +172,16 @@ export const sessionResolver = {
                     return apolloServerConnection.pubsub.asyncIterator(["SESSION_LISTENER"]);
                 },
                 (payload, args) => {
-                    return args.sessionId === payload._id.valueOf();
+                    let ids = args && args.sessionId ? args.sessionId.split('|') : [];
+                    let isMatched = false;
+
+                    ids.map((id) => {
+                        if (id === payload._id.valueOf()) {
+                            isMatched = true;
+                        }
+                    });
+
+                    return isMatched;
                 }
             )
         }
