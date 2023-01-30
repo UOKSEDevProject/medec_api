@@ -114,7 +114,7 @@ export const sessionResolver = {
             return response;
         },
 
-        createApt: async (_, args) => {
+        addAppointment: async (_, args) => {
             let appointment = {
                 pId: args.aptArgs.pId,
                 pName: args.aptArgs.pName,

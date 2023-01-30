@@ -2,6 +2,7 @@ import {ChanCenterModel} from "../../database/models/chan-center-model.js";
 import {findChanCenterById, updateDoctorsArray} from "../../respositories/chan-center-repository.js";
 import {findDoctorByMedicalCouncilNumber} from "../../respositories/doctor-repository.js";
 import {statusCodes} from "../../constants.js";
+import {DoctorModel} from "../../database/models/doctor-model.js";
 
 let response = {
     statusCode: null,
@@ -11,13 +12,23 @@ let response = {
 
 export const chanCenterResolver = {
     Query: {
-        getChannelCenters: async () => {
-            let channelCenters = await ChanCenterModel.find({});
-            return channelCenters;
-        },
-        getChannelCenterById: async (_, args) => {
-            let channelCenter = await ChanCenterModel.findById(args.id);
-            return channelCenter;
+        getDoctorList: async (_, args) => {
+            let chanCenter = await findChanCenterById(args.chId);
+
+            if (chanCenter === null) {
+                response.statusCode = statusCodes.OnNotFound.code;
+                response.statusDetails = statusCodes.OnNotFound.details;
+                response.payload = null;
+            } else {
+                let doctors = chanCenter.doctors.map(async (doctor) => {
+                    return await findDoctorByMedicalCouncilNumber(doctor);
+                })
+                response.statusCode = statusCodes.Onsuccess.code;
+                response.statusDetails = statusCodes.Onsuccess.details;
+                response.payload = doctors;
+            }
+
+            return response;
         }
     },
 
