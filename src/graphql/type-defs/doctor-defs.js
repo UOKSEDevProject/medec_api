@@ -28,7 +28,7 @@ export const doctorDefs = apollo.gql`
          cntNo: String!
          address: String!
          spec: String!
-         prfImgUrl: String!
+         prfImgUrl: String
          email: String!
          sex: String!
     }

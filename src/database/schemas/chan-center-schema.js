@@ -17,4 +17,5 @@ export const ChanCenterSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.String,
         required: true,
     },
+    doctors: [String]
 });
