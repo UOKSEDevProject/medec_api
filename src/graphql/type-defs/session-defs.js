@@ -9,7 +9,7 @@ export const sessionDefs = apollo.gql`
         createSession (session: SessionArgs!): SessionApiResponse
         updateSession (sessionId: String!, session: SessionUpdateArgs!): SessionApiResponse
         deleteSession (sessionId: String!): SessionApiResponse
-        createApt (sessionId: String!, aptArgs: AppointmentArgs!): Session
+        addAppointment (sessionId: String!, pId: String!): SessionApiResponse
         updateAptSts (sessionId: String!, aptId: String!, sts: String!): Session
     }
     

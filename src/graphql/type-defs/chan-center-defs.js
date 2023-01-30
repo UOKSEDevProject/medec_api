@@ -4,6 +4,7 @@ export const chanCenterDefs = apollo.gql`
     type Query {    
         getChannelCenters: [ChannelCenter]
         getChannelCenterById (id: String!): ChannelCenter
+        getDoctorList (chId: String!): DoctorListResponse
     }
     
     type Mutation {
@@ -15,6 +16,12 @@ export const chanCenterDefs = apollo.gql`
         statusCode:String!
         statusDetails: String!,
         payload: ChannelCenter
+    }
+    
+    type DoctorListResponse{
+        statusCode:String!
+        statusDetails: String!,
+        payload: [Doctor]
     }
     
     type ChannelCenter {
