@@ -10,14 +10,14 @@ export const doctorDefs = apollo.gql`
         searchDoctors (searchValue: String!, category: String): [Doctor]
     }
     
+    type Mutation {
+         addDoctor (doctor: DoctorArgs!): Response
+    }
+    
     type Response{
         statusCode:String!
         statusDetails: String!,
         payload: Doctor
-    }
-    
-    type Mutation {
-        addDoctor (doctor: DoctorArgs!): Doctor
     }
     
     type Doctor {
@@ -73,17 +73,15 @@ export const doctorDefs = apollo.gql`
     }
     
     input DoctorArgs {
-         _id:String!
+         mcNumber:String!
          fullName: String!
          disName: String!
          nameWithInitials: String!
-         cntNo: String!
-         address: String!
-         spec: String!
-         prfImgUrl: String!
-         email: String!
          sex: String!
+         spec: String!
+         cntNo: String!
+         email: String!
+         address: String!
+         prfImgUrl: String
     }
-    
-   
 `
