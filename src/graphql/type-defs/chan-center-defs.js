@@ -8,6 +8,13 @@ export const chanCenterDefs = apollo.gql`
     
     type Mutation {
         addChannelCenter (chanCenter: ChannelCenterArgs!): ChannelCenter
+        addDoctorToChannelCenter (chId: String!, dctId: String!): ChanCenterResponse
+    }
+    
+    type ChanCenterResponse{
+        statusCode:String!
+        statusDetails: String!,
+        payload: ChannelCenter
     }
     
     type ChannelCenter {
@@ -16,6 +23,7 @@ export const chanCenterDefs = apollo.gql`
          address: String!
          cntNo: String!
          logoUrl: String!
+         doctors: [String]!
     }
     
     input ChannelCenterArgs {
