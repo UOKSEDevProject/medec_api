@@ -1,6 +1,7 @@
 import {DoctorModel} from "../../database/models/doctor-model.js";
 import {SessionModel} from "../../database/models/session-model.js";
 import {statusCodes} from "../../constants.js";
+import {createDoctor, findDoctorByMedicalCouncilNumber} from "../../respositories/doctor-repository.js";
 
 let response = {
     statusCode: null,
@@ -185,7 +186,7 @@ export const doctorResolver = {
                             },
                             {
                                 $project: {
-                                    id:"$_id",
+                                    id: "$_id",
                                     time: "$strTime",
                                     date: "$date",
                                     appointments: "$totApts",
@@ -302,21 +303,34 @@ export const doctorResolver = {
 
     Mutation: {
         addDoctor: async (_, args) => {
-            let doctor = {
-                _id: args.doctor._id,
-                fullName: args.doctor.fullName,
-                disName: args.doctor.disName,
-                nameWithInitials: args.doctor.nameWithInitials,
-                cntNo: args.doctor.cntNo,
-                address: args.doctor.address,
-                spec: args.doctor.spec,
-                prfImgUrl: args.doctor.prfImgUrl,
-                email: args.doctor.email,
-                sex: args.doctor.sex,
-            }
+            let doctor = await findDoctorByMedicalCouncilNumber(args.doctor.mcNumber);
 
-            let created = await DoctorModel.create(doctor);
-            return created;
+            if (doctor !== null) {
+                response.statusCode = statusCodes.OnConflict.code;
+                response.statusDetails = statusCodes.OnConflict.details;
+                response.payload = doctor;
+                return response;
+            } else {
+                let newDoctor = {
+                    _id: args.doctor.mcNumber,
+                    fullName: args.doctor.fullName,
+                    disName: args.doctor.disName,
+                    nameWithInitials: args.doctor.nameWithInitials,
+                    sex: args.doctor.sex,
+                    spec: args.doctor.spec,
+                    cntNo: args.doctor.cntNo,
+                    email: args.doctor.email,
+                    address: args.doctor.address,
+                    prfImgUrl: args.doctor.prfImgUrl
+                }
+
+                let created = await createDoctor(newDoctor)
+
+                response.statusCode = statusCodes.Onsuccess.code;
+                response.statusDetails = statusCodes.Onsuccess.details;
+                response.payload = created;
+            }
+            return response;
         }
     }
 }
