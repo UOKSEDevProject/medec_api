@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import {config} from "../config.js";
+import nodemailer from "nodemailer";
 
 const createToken = (data) => {
     return jwt.sign(data, config.JWT_SECRET_ID, {
@@ -18,9 +19,25 @@ const verifyToken = (token, tknInvalidCallback, tknValidCallback) => {
     });
 };
 
+const sendEMail = (to,subject,body) => {
+    nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'medec.srilanka@gmail.com',
+            pass: 'osnjkxygctxutyik'
+        }
+    }).sendMail({
+        from: 'medec.srilanka@gmail.com',
+        to: to,
+        subject: subject,
+        text: body
+    });
+}
+
 const utils = {
     createToken: createToken,
-    verifyToken: verifyToken
+    verifyToken: verifyToken,
+    sendEMail:sendEMail
 };
 
 export default utils;

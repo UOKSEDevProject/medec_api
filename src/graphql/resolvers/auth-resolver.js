@@ -150,6 +150,7 @@ const onCreatePatient = (args, resolve) => {
     };
 
     PatientModel.create(patient).then((patient) => {
+        utils.sendEMail();
         onCreateHashPassword(args, constants.authTypePatient, patient._id, resolve);
     });
 };
