@@ -4,6 +4,12 @@ import {withFilter} from "graphql-subscriptions";
 import {sessionStatus, statusCodes} from "../../constants.js";
 import {DoctorModel} from "../../database/models/doctor-model.js";
 import {ChanCenterModel} from "../../database/models/chan-center-model.js";
+import {findPatientById} from "../../respositories/patient-repository.js";
+import {
+    addAppointmentToSession,
+    checkWhetherAlreadyHaveAppointmentForGivenUser,
+    findSessionById
+} from "../../respositories/session-repository.js";
 
 let changeStream = undefined;
 let pipeline = undefined;
@@ -27,13 +33,6 @@ let response = {
 };
 
 export const sessionResolver = {
-    Query: {
-        getSessions: async (_, args) => {
-            let sessions = await SessionModel.find();
-            return sessions;
-        }
-    },
-
     Mutation: {
         createSession: async (_, args) => {
             let doctor = await DoctorModel.findById(args.session.dctId);
@@ -115,27 +114,45 @@ export const sessionResolver = {
         },
 
         addAppointment: async (_, args) => {
-            let appointment = {
-                pId: args.aptArgs.pId,
-                pName: args.aptArgs.pName,
-                activeSt: args.aptArgs.activeSt,
-                aptNo: args.aptArgs.aptNo
+            let patient = await findPatientById(args.pId);
+            let session = await findSessionById(args.sessionId);
+
+            if (patient === null || session === null) {
+                response.statusCode = statusCodes.OnNotFound.code;
+                response.statusDetails = statusCodes.OnNotFound.details;
+                response.payload = null;
+                return response;
             }
 
-            let updated = await SessionModel.findOneAndUpdate(
-                {_id: args.sessionId},
-                {
-                    $push: {
-                        apts: appointment,
-                    }
-                },
-                {
-                    new: true,
-                    rawResult: true,
-                }
-            )
+            let isNotEligible = await checkWhetherAlreadyHaveAppointmentForGivenUser(args.sessionId, args.pId);
 
-            return updated.value;
+            if (isNotEligible) {
+                response.statusCode = statusCodes.OnConflict.code;
+                response.statusDetails = statusCodes.OnConflict.details;
+                response.payload = null;
+                return response;
+            }
+
+            let appointment = {
+                pId: args.pId,
+                pName: patient.disName,
+                activeSt: sessionStatus.NOT_STARTED,
+                aptNo: session.totApts + 1,
+            }
+
+            let updatedSession = await addAppointmentToSession(args.sessionId, appointment);
+
+            if (updatedSession.lastErrorObject.updatedExisting) {
+                response.statusCode = statusCodes.Onsuccess.code;
+                response.statusDetails = statusCodes.Onsuccess.details;
+                response.payload = updatedSession.value;
+                return response;
+            } else {
+                response.statusCode = statusCodes.OnUnknownError.code;
+                response.statusDetails = statusCodes.OnUnknownError.details;
+                response.payload = null;
+                return response;
+            }
         },
 
         updateAptSts: async (_, args) => {
