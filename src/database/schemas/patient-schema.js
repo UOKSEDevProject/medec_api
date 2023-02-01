@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const MediHistorySchema = new mongoose.Schema({
     date: {
-        type: mongoose.SchemaTypes.String,
+        type: mongoose.SchemaTypes.Date,
         required: true,
     },
     dct: {

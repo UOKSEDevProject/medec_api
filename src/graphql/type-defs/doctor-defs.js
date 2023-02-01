@@ -3,11 +3,10 @@ import apollo from "apollo-server-express";
 export const doctorDefs = apollo.gql`
     type Query { 
         getDoctorById (id: String!): Response
-        getDoctors (searchValue: String, category: String): [AvailableDoctor] 
-        getDoctorSessionList (id: String!): DoctorProfile
-        getDoctorSessionListForChannelCenter (id: String!, chId: String!): ChannelCenterDoctorProfile
-        getAvailableDoctors (searchValue: String, category: String): [AvailableDoctor]
-        searchDoctors (searchValue: String!, category: String): [Doctor]
+        getDoctors (searchValue: String, category: String): [GetDoctorResponse] 
+        getAvailableDoctors (searchValue: String, category: String): [GetAvailableDoctorResponse]
+        getDoctorProfile (id: String!): DoctorProfile
+        getDoctorProfileForChannelCenter (id: String!, chId: String!): ChannelCenterDoctorProfile
     }
     
     type Mutation {
@@ -18,6 +17,15 @@ export const doctorDefs = apollo.gql`
         statusCode:String!
         statusDetails: String!,
         payload: Doctor
+    }
+    
+     type GetDoctorResponse {
+         _id: String!
+         disName: String!
+         specialization: String!
+         imageSrc: String!
+         mediCenter: String
+         status: Boolean!
     }
     
     type Doctor {
@@ -31,6 +39,14 @@ export const doctorDefs = apollo.gql`
          prfImgUrl: String
          email: String!
          sex: String!
+    }
+    
+    type GetAvailableDoctorResponse{
+         _id: String!
+         disName: String!
+         specialization: String!
+         imageSrc: String!
+         mediCenter: String!
     }
     
     type DoctorProfile {
@@ -61,15 +77,6 @@ export const doctorDefs = apollo.gql`
         date: String!
         appointments: Int!
         maximumAppointments: Int!
-    }
-    
-    type AvailableDoctor{
-         _id: String!
-         disName: String!
-         specialization: String!
-         imageSrc: String!
-         mediCenter: String
-         status: Boolean
     }
     
     input DoctorArgs {
