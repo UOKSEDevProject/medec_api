@@ -141,16 +141,22 @@ const onCreateLab = (args, resolve) => {
 
 const onCreatePatient = (args, resolve) => {
     let patient = {
-        birthDate: "23123",
-        sex: "23123",
-        cntNo: "23123",
-        bldGrp: "23123",
+        prfImgUrl: args.userArgs.patientArgs.prfImgUrl,
+        address: args.userArgs.patientArgs.address,
+        birthDate: args.userArgs.patientArgs.birthDate,
+        des: args.userArgs.patientArgs.des,
+        sex: args.userArgs.patientArgs.sex,
+        cntNo: args.userArgs.patientArgs.cntNo,
+        bldGrp: args.userArgs.patientArgs.bldGrp,
         mediHis: [],
-        disName: "23123",
+        disName: args.userArgs.patientArgs.disName,
+        fullName: args.userArgs.patientArgs.fullName,
+        nameWithInitials: args.userArgs.patientArgs.nameWithInitials
     };
 
     PatientModel.create(patient).then((patient) => {
-        utils.sendEMail();
+        utils.sendEMail(args.usr,'Successfully Registered',`Hi ${patient.disName},
+        Welcome to Medec (Your online medical assistant)`);
         onCreateHashPassword(args, constants.authTypePatient, patient._id, resolve);
     });
 };
