@@ -3,7 +3,7 @@ import {PatientModel} from "../../database/models/patient-model.js";
 import {findPatientById} from "../../respositories/patient-repository.js";
 import {statusCodes} from "../../constants.js";
 import {findLabReportsByPatientId} from "../../respositories/lab-report-repository.js";
-import {groupLabReportsByMonth} from "../../utils/lab-report-utils.js";
+import {sortArrayBasedOnMonthAndDate} from "../../utils/lab-report-utils.js";
 
 let response = {
     statusCode: null,
@@ -77,7 +77,7 @@ export const patientResolver = {
             return appointments;
         },
 
-        getReportList: async (_, args) => {
+        getLabReportList: async (_, args) => {
             let patient = await findPatientById(args.pId);
 
             if (patient === null) {
@@ -89,9 +89,30 @@ export const patientResolver = {
 
             let reports = await findLabReportsByPatientId(args.pId);
 
-            console.log(reports);
+            let results = sortArrayBasedOnMonthAndDate(reports);
 
-            groupLabReportsByMonth(reports);
+            response.statusCode = statusCodes.Onsuccess.code;
+            response.statusDetails = statusCodes.Onsuccess.details;
+            response.payload = results;
+            return response;
+        },
+
+        getMedicalReportList:  async (_, args) => {
+            let patient = await findPatientById(args.pId);
+
+            if (patient === null) {
+                response.statusCode = statusCodes.OnNotFound.code;
+                response.statusDetails = statusCodes.OnNotFound.details;
+                response.payload = null;
+                return response;
+            }
+
+            let results = sortArrayBasedOnMonthAndDate(patient.mediHis);
+
+            response.statusCode = statusCodes.Onsuccess.code;
+            response.statusDetails = statusCodes.Onsuccess.details;
+            response.payload = results;
+            return response;
         }
     },
 
