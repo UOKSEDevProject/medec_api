@@ -34,10 +34,25 @@ const sendEMail = (to,subject,body) => {
     });
 }
 
+const makePassword = async () => {
+    let result = '';
+    let length=8;
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+
+    return result;
+}
+
 const utils = {
     createToken: createToken,
     verifyToken: verifyToken,
-    sendEMail:sendEMail
+    sendEMail: sendEMail,
+    makePassword: makePassword,
 };
 
 export default utils;
