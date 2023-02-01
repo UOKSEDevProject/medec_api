@@ -18,11 +18,7 @@ export const LabReportSchema = new mongoose.Schema({
         required: true,
     },
     date: {
-        type: mongoose.SchemaTypes.String,
-        required: true,
-    },
-    address: {
-        type: mongoose.SchemaTypes.String,
+        type: mongoose.SchemaTypes.Date,
         required: true,
     }
 });

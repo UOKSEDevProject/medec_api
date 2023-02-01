@@ -126,6 +126,7 @@ export const doctorResolver = {
                         $group: {
                             _id: "$chId", sessionsList: {
                                 $push: {
+                                    id: "$_id",
                                     time: "$strTime",
                                     date: "$date",
                                     appointments: "$totApts",

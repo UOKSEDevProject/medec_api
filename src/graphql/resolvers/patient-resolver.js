@@ -1,13 +1,18 @@
 import {SessionModel} from "../../database/models/session-model.js";
 import {PatientModel} from "../../database/models/patient-model.js";
+import {findPatientById} from "../../respositories/patient-repository.js";
+import {statusCodes} from "../../constants.js";
+import {findLabReportsByPatientId} from "../../respositories/lab-report-repository.js";
+import {groupLabReportsByMonth} from "../../utils/lab-report-utils.js";
+
+let response = {
+    statusCode: null,
+    statusDetails: null,
+    payload: null
+};
 
 export const patientResolver = {
     Query: {
-        getPatients: async () => {
-            let patients = await PatientModel.find();
-            return patients;
-        },
-
         getAppointments: async (_, args) => {
             let pipeline = [
                 {
@@ -70,6 +75,23 @@ export const patientResolver = {
             let appointments = await SessionModel.aggregate(pipeline);
 
             return appointments;
+        },
+
+        getReportList: async (_, args) => {
+            let patient = await findPatientById(args.pId);
+
+            if (patient === null) {
+                response.statusCode = statusCodes.OnNotFound.code;
+                response.statusDetails = statusCodes.OnNotFound.details;
+                response.payload = null;
+                return response;
+            }
+
+            let reports = await findLabReportsByPatientId(args.pId);
+
+            console.log(reports);
+
+            groupLabReportsByMonth(reports);
         }
     },
 
@@ -92,6 +114,5 @@ export const patientResolver = {
 
             return created;
         },
-
     }
 }

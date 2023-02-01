@@ -2,12 +2,30 @@ import apollo from "apollo-server-express";
 
 export const patientDefs = apollo.gql`
     type Query { 
-         getPatients: [Patient]
-         getAppointments(id:String!) : [Appointment]
+         getAppointments (id:String!): [Appointment]
+         getReportList (pId:String!): LabReportsResponse
     }
     
     type Mutation {
          addPatient (patient: PatientArgs!): Patient
+    }
+    
+    type LabReportsResponse {
+        statusCode:String!
+        statusDetails: String!,
+        payload: [MonthlyLabReport]
+    }
+    
+    type MonthlyLabReport {
+        title: String!,
+        reports: [LabReport]
+    }
+    
+    type LabReport {
+        id: String!,
+        day: String!,
+        description: String!,
+        imgUrl: String!
     }
     
     type Patient {
