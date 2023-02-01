@@ -86,13 +86,21 @@ const onSaveInDB = (args, hash, authType, usrId, resolve) => {
     });
 };
 
-const onCreateHashPassword = (args, authType, usrId, resolve) => {
+export const onCreateHashPassword = (args, authType, usrId, resolve) => {
     bcrypt.genSalt(8, (err, salt) => {
         bcrypt.hash(args.pwd, salt, (err, hash) => {
             onSaveInDB(args, hash, authType, usrId, resolve);
         });
     });
 };
+
+// const onCreateHashPassword = (args, authType, usrId, resolve) => {
+//     bcrypt.genSalt(8, (err, salt) => {
+//         bcrypt.hash(args.pwd, salt, (err, hash) => {
+//             onSaveInDB(args, hash, authType, usrId, resolve);
+//         });
+//     });
+// };
 
 const onCreateDoctor = async (args, resolve) => {
     let doctor = {

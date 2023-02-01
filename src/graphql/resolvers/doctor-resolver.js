@@ -1,7 +1,10 @@
 import {DoctorModel} from "../../database/models/doctor-model.js";
 import {SessionModel} from "../../database/models/session-model.js";
-import {statusCodes} from "../../constants.js";
+import {statusCodes, mailTexts} from "../../constants.js";
+import constants from "../../constants.js";
 import {createDoctor, findDoctorByMedicalCouncilNumber} from "../../respositories/doctor-repository.js";
+import {onCreateHashPassword} from './auth-resolver.js';
+import utils from '../../utils/utils.js';
 
 let response = {
     statusCode: null,
@@ -325,7 +328,21 @@ export const doctorResolver = {
                     prfImgUrl: args.doctor.prfImgUrl
                 }
 
-                let created = await createDoctor(newDoctor)
+                let created = await createDoctor(newDoctor).then((res) => {
+                    new Promise(async (resolve, reject) => {
+                        let object;
+                        await utils.makePassword().then((password)=>{
+                           try{
+                                object = {pwd: password, usr: newDoctor.email}
+                                onCreateHashPassword(object, constants.authTypeDoctor, res._id, resolve)
+                                utils.sendEMail(object.usr,mailTexts.DOCTOR_REGISTERED_SUCCESSFULLY,`Dr ${newDoctor.disName},\n Your password='${object.pwd}' and email='${object.usr}'`);
+                            }
+                            catch(e){
+                                utils.sendEMail(object.usr,mailTexts.DOCTOR_REGISTERED_FAIL,`Dr ${newDoctor.disName},\n Your Medec registration was not succesfuly completed. Please contact the administration`);
+                            }
+                        });
+                    })
+                });
 
                 response.statusCode = statusCodes.Onsuccess.code;
                 response.statusDetails = statusCodes.Onsuccess.details;
