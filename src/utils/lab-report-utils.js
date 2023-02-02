@@ -1,46 +1,32 @@
 export const sortArrayBasedOnMonthAndDate = (items) => {
-    let results = [];
+    const results = [];
 
-    let currentYear = items[0].date.getFullYear();
-    let currentMonth = items[0].date.getMonth();
-    let month = getMonthString(currentMonth) + " " + currentYear;
+    let today = new Date();
+    let startDate = new Date();
+    startDate.setMonth(today.getMonth() - 12);
 
-    let monthlyReports = {
-        month: month,
-        reports: []
-    }
-
-    items.map(report => {
-        let reportYear = report.date.getFullYear();
-        let reportMonth = report.date.getMonth();
-        let reportDate = report.date.getDate();
-
-        let newReport = {
-            id: report._id,
-            day: reportDate + getDateTitle(reportDate),
-            description: report.name,
-            imgUrl: report.imgPath
+    while (today > startDate) {
+        let monthlyRecords = {
+            month: getMonthString(startDate.getMonth()) + " " + startDate.getFullYear(),
+            reports: []
         }
 
-        if (reportMonth !== currentMonth) {
-            results.push(monthlyReports);
-
-            while (currentMonth < reportMonth) {
-                monthlyReports.month = getMonthString(currentMonth) + " " + reportYear;
-                monthlyReports.reports = [];
-                if (currentMonth < reportMonth) {
-                    results.push(monthlyReports)
+        items.forEach(item => {
+            if (item.date.getMonth() === startDate.getMonth() && item.date.getFullYear()) {
+                let newReport = {
+                    id: item._id,
+                    day: item.date.getDate() + getDateTitle(item.date.getDate()),
+                    description: item.name,
+                    imgUrl: item.imgPath
                 }
-                currentMonth++;
-            }
-        } else {
-            monthlyReports.reports.push(newReport);
 
-            if (items.indexOf(report) === items.length - 1) {
-                results.push(monthlyReports);
+                monthlyRecords.reports.push(newReport);
             }
-        }
-    })
+        })
+
+        results.push(monthlyRecords);
+        startDate.setMonth(startDate.getMonth() + 1);
+    }
 
     return results;
 }
