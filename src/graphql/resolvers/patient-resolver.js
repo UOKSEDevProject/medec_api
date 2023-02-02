@@ -12,6 +12,22 @@ let response = {
 
 export const patientResolver = {
     Query: {
+        getPatientProfile: async (_, args) => {
+            let patient = await findPatientById(args.id);
+
+            if (patient !== null) {
+                response.statusCode = statusCodes.Onsuccess.code;
+                response.statusDetails = statusCodes.Onsuccess.details;
+                response.payload = patient;
+            } else {
+                response.statusCode = statusCodes.OnNotFound.code;
+                response.statusDetails = statusCodes.OnNotFound.details;
+                response.payload = null;
+            }
+
+            return response;
+        },
+
         getAppointments: async (_, args) => {
             return await getAppointments(args.id);
         },

@@ -12,7 +12,7 @@ export const getAppointments = async (id) => {
         },
         {
             $match: {
-                "apts.pId": args.id
+                "apts.pId": id
             }
         },
         {
