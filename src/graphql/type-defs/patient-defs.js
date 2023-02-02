@@ -2,6 +2,7 @@ import apollo from "apollo-server-express";
 
 export const patientDefs = apollo.gql`
     type Query {
+        getPatientProfile (id:String!): PatientResponse
         getAppointments (id:String!): [Appointment]
         getLabReportList (pId:String!): ReportResponse
         getMedicalReportList (pId:String!): ReportResponse
@@ -9,6 +10,12 @@ export const patientDefs = apollo.gql`
 
     type Mutation {
         addPatient (patient: PatientArgs!): Patient
+    }
+    
+    type PatientResponse{
+        statusCode:String!
+        statusDetails: String!,
+        payload: Patient
     }
 
     type ReportResponse {
