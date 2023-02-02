@@ -6,6 +6,10 @@ export const authDefs = apollo.gql`
         register (usr: String!, pwd: String!, userArgs: UserArgs): Login
     }
     
+    type Subscription {
+        authListener (userId: String!): Login
+    }
+    
     type Login {
         authSts: Int!
         authType: Int

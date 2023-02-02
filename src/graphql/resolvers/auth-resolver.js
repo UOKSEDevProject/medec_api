@@ -6,6 +6,8 @@ import constants from "../../constants.js";
 import {ChanCenterModel} from "../../database/models/chan-center-model.js";
 import {LabModel} from "../../database/models/lab-model.js";
 import utils from "../../utils/utils.js";
+import {withFilter} from "graphql-subscriptions";
+import {apolloServerConnection} from "../../apollo-server-connection.js";
 
 const onLoginCallback = async (resolve, reject, args, authType) => {
     let findUsr = await checkUsrInDB(args);
@@ -181,6 +183,21 @@ export const authResolver = {
             return new Promise((resolve, reject) => {
                 onRegisterCallback(resolve, reject, args, context.authType);
             });
+        }
+    },
+
+    Subscription: {
+        authListener: {
+            resolve: (payload) => {
+                return payload
+            },
+
+            subscribe: withFilter(
+                () => {
+                    return apolloServerConnection.pubsub.asyncIterator(["AUTH_LISTENER"]);
+                },
+                (payload, args) => {return true}
+            )
         }
     }
 };

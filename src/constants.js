@@ -9,6 +9,7 @@ const constants = {
     authFail: 11,
     authRegisteredSuccess: 12,
     authRegisteredFail: 13,
+    authLogout: 14,
 
     platformMobile: 1,
     platformWeb: 2,

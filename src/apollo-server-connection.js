@@ -39,11 +39,12 @@ async function startApolloServer() {
         ],
         context: ({req}) => {
             let decode = null;
-            const token = req.headers.authorization || '';
+            const token = req.headers.auth_tkn || '';
+            const usrId = req.headers.usrId || '';
 
             if (token) {
                 decode = utils.verifyToken(token, () => {
-                    throw new AuthenticationError('Token Error');
+                    utils.sendAuthLogoutResponse();
                 });
             }
 
