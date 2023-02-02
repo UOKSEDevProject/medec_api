@@ -1,11 +1,11 @@
 export const sortArrayBasedOnMonthAndDate = (items) => {
     const results = [];
 
-    let today = new Date();
     let startDate = new Date();
-    startDate.setMonth(today.getMonth() - 12);
+    let endDate = new Date();
+    endDate.setMonth(startDate.getMonth() - 12);
 
-    while (today > startDate) {
+    while (startDate > endDate) {
         let monthlyRecords = {
             month: getMonthString(startDate.getMonth()) + " " + startDate.getFullYear(),
             reports: []
@@ -25,7 +25,7 @@ export const sortArrayBasedOnMonthAndDate = (items) => {
         })
 
         results.push(monthlyRecords);
-        startDate.setMonth(startDate.getMonth() + 1);
+        startDate.setMonth(startDate.getMonth() - 1);
     }
 
     return results;
