@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import {config} from "../config.js";
 import nodemailer from "nodemailer";
+import {apolloServerConnection} from "../apollo-server-connection.js";
+import constants from "../constants.js";
 
 const createToken = (data) => {
     return jwt.sign(data, config.JWT_SECRET_ID, {
@@ -48,11 +50,16 @@ const makePassword = async () => {
     return result;
 }
 
+const sendAuthLogoutResponse = () => {
+    apolloServerConnection.pubsub.publish("AUTH_LISTENER", {authSts: constants.authLogout});
+}
+
 const utils = {
     createToken: createToken,
     verifyToken: verifyToken,
     sendEMail: sendEMail,
     makePassword: makePassword,
+    sendAuthLogoutResponse: sendAuthLogoutResponse
 };
 
 export default utils;
