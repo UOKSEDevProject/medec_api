@@ -28,6 +28,20 @@ async function startApolloServer() {
         path: '/subscriptions'
     });
 
+    const onTokenValid = (decode, usrId, authType) => {
+        if (usrId !== decode.usrId) {
+            utils.sendAuthLogoutResponse();
+        }
+
+        if (decode.authType !== authType) {
+            utils.sendAuthLogoutResponse();
+        }
+    }
+
+    const onTokenInvalid = () => {
+        utils.sendAuthLogoutResponse();
+    }
+
     const server = new ApolloServer({
         schema: schema,
         csrfPrevention: true,
@@ -40,16 +54,15 @@ async function startApolloServer() {
         context: ({req}) => {
             let decode = null;
             const token = req.headers.auth_tkn || '';
-            const usrId = req.headers.usrId || '';
+            const usrId = req.headers.usrid || '';
+            const authType = req.headers.auth_type || '';
 
-            if (token) {
-                decode = utils.verifyToken(token, () => {
-                    utils.sendAuthLogoutResponse();
-                });
+            if (token && usrId) {
+                decode = utils.verifyToken(token, usrId, authType, onTokenInvalid, onTokenValid);
             }
 
             return {
-                authType: req.headers.auth_type || constants.authTypePatient,
+                authType: authType || constants.authTypePatient,
                 platform_type: req.headers.platform_type || constants.platformWeb,
                 tknPayload: decode,
                 origin: req.headers.origin

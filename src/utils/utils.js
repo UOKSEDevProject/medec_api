@@ -10,13 +10,13 @@ const createToken = (data) => {
     });
 };
 
-const verifyToken = (token, tknInvalidCallback, tknValidCallback) => {
+const verifyToken = (token, usrId, authType, tknInvalidCallback, tknValidCallback) => {
     return jwt.verify(token, config.JWT_SECRET_ID, (error, decode) => {
         if (error && typeof tknInvalidCallback === 'function') {
             tknInvalidCallback();
         } else {
             if (typeof tknValidCallback === 'function')
-            tknValidCallback(decode);
+            tknValidCallback(decode, usrId, authType);
         }
     });
 };

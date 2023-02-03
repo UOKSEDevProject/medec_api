@@ -10,7 +10,7 @@ export const doctorDefs = apollo.gql`
     }
     
     type Mutation {
-         addDoctor (doctor: DoctorArgs!): Response
+         addDoctor (chId:String!, doctor: DoctorArgs!): Response
     }
     
     type Response{
