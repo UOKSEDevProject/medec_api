@@ -53,7 +53,9 @@ export const sessionStatus = {
 
 export const mailTexts = {
     DOCTOR_REGISTERED_SUCCESSFULLY: 'You are registered as a Doctor in Medec',
-    DOCTOR_REGISTERED_FAIL: 'Your registration is failed in Medec'
+    DOCTOR_REGISTERED_FAIL: 'Your registration is failed in Medec',
+    MC_REGISTERED_SUCCESSFULLY: 'You are registered as a Channel Center in Medec',
+    MC_REGISTERED_FAIL: 'Your registration is failed in Medec'
 }
 
 export default constants;

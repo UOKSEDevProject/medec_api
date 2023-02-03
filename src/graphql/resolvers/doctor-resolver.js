@@ -94,7 +94,7 @@ export const doctorResolver = {
                     await updateDoctorsArray(args.chId, args.doctor.mcNumber);
                     return res;
                 });
-
+                console.log(created)
                 response.statusCode = statusCodes.Onsuccess.code;
                 response.statusDetails = statusCodes.Onsuccess.details;
                 response.payload = created;
