@@ -10,6 +10,7 @@ import {statusCodes, mailTexts} from "../../constants.js";
 import constants from "../../constants.js";
 import {onCreateHashPassword} from './auth-resolver.js';
 import utils from '../../utils/utils.js';
+import {updateDoctorsArray} from "../../respositories/chan-center-repository.js";
 
 let response = {
     statusCode: null,
@@ -77,20 +78,21 @@ export const doctorResolver = {
                     prfImgUrl: args.doctor.prfImgUrl
                 }
 
-                let created = await createDoctor(newDoctor).then((res) => {
+                let created = await createDoctor(newDoctor).then(async (res) => {
                     new Promise(async (resolve, reject) => {
                         let object;
-                        await utils.makePassword().then((password)=>{
-                           try{
+                        await utils.makePassword().then((password) => {
+                            try {
                                 object = {pwd: password, usr: newDoctor.email}
                                 onCreateHashPassword(object, constants.authTypeDoctor, res._id, resolve)
-                                utils.sendEMail(object.usr,mailTexts.DOCTOR_REGISTERED_SUCCESSFULLY,`Dr ${newDoctor.disName},\n Your password='${object.pwd}' and email='${object.usr}'`);
-                            }
-                            catch(e){
-                                utils.sendEMail(object.usr,mailTexts.DOCTOR_REGISTERED_FAIL,`Dr ${newDoctor.disName},\n Your Medec registration was not succesfuly completed. Please contact the administration`);
+                                utils.sendEMail(object.usr, mailTexts.DOCTOR_REGISTERED_SUCCESSFULLY, `Dr ${newDoctor.disName},\n Your password='${object.pwd}' and email='${object.usr}'`);
+                            } catch (e) {
+                                utils.sendEMail(object.usr, mailTexts.DOCTOR_REGISTERED_FAIL, `Dr ${newDoctor.disName},\n Your Medec registration was not succesfuly completed. Please contact the administration`);
                             }
                         });
                     })
+                    await updateDoctorsArray(args.chId, args.doctor.mcNumber);
+                    return res;
                 });
 
                 response.statusCode = statusCodes.Onsuccess.code;
