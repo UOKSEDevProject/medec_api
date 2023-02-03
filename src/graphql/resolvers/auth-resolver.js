@@ -3,6 +3,7 @@ import {AuthModel} from "../../database/models/auth-model.js";
 import {PatientModel} from "../../database/models/patient-model.js";
 import {DoctorModel} from "../../database/models/doctor-model.js";
 import constants from "../../constants.js";
+import {mailTexts} from "../../constants.js";
 import {ChanCenterModel} from "../../database/models/chan-center-model.js";
 import {LabModel} from "../../database/models/lab-model.js";
 import utils from "../../utils/utils.js";
@@ -88,7 +89,19 @@ const onSaveInDB = (args, hash, authType, usrId, resolve) => {
     });
 };
 
-export const onCreateHashPassword = (args, authType, usrId, resolve) => {
+export const onCreateHashPassword = async(args, authType, usrId, resolve) => {
+     //email sender
+     console.log(authType,' ',args,'-args',)
+     if(authType === constants.authTypeChannelCenter){
+        await utils.makePassword().then((password)=>{
+            args.pwd = password;
+            utils.sendEMail(args.usr,mailTexts.MC_REGISTERED_SUCCESSFULLY,`Hi ${args.userArgs.chanCenterArgs.name},
+            Your password=' ${password} ' and email=' ${args.usr} '`);
+        }).catch(()=>{
+            utils.sendEMail(args.usr,mailTexts.MC_REGISTERED_FAIL,`Hi ${args.userArgs.chanCenterArgs.name},
+            Your Medec registration was not succesfuly completed. Please contact the administration`)
+        })
+    }
     bcrypt.genSalt(8, (err, salt) => {
         bcrypt.hash(args.pwd, salt, (err, hash) => {
             onSaveInDB(args, hash, authType, usrId, resolve);

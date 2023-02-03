@@ -92,7 +92,7 @@ export const doctorResolver = {
                         });
                     })
                 });
-
+                console.log(created)
                 response.statusCode = statusCodes.Onsuccess.code;
                 response.statusDetails = statusCodes.Onsuccess.details;
                 response.payload = created;
