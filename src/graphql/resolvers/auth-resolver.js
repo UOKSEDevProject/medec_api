@@ -65,7 +65,7 @@ const onCreateUserProfile = (args, authType, resolve) => {
     } else if (authType === constants.authTypeLab) {
         onCreateLab(args, resolve);
     } else if (authType === constants.authTypeAdmin) {
-
+        onCreateChannelCenter(args, resolve);
     } else if (authType === constants.authTypePatient) {
         onCreatePatient(args, resolve);
     } else if (authType === constants.authTypeChannelCenter) {
