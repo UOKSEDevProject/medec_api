@@ -88,11 +88,10 @@ export const patientResolver = {
             let pendList = results?.map(result => {
                 return {
                     id: result._id,
-                    name: result.name
+                    name: result.name,
+                    isRequired: false
                 };
             })
-
-            console.log(results, pendList);
 
             let payload = {
                 patient: patient,

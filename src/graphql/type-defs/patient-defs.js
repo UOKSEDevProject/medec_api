@@ -39,6 +39,7 @@ export const patientDefs = apollo.gql`
     type ReportReq{
         id: String!
         name: String!
+        isRequired: Boolean
     }
 
     type MonthlyReport {
