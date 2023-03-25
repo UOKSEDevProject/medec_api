@@ -6,6 +6,7 @@ export const patientDefs = apollo.gql`
         getAppointments (id:String!): [Appointment]
         getLabReportList (pId:String!): ReportResponse
         getMedicalReportList (pId:String!): ReportResponse
+        getPatientReportRequirementList (pId:String!): ReportReqResponse 
     }
 
     type Mutation {
@@ -22,6 +23,22 @@ export const patientDefs = apollo.gql`
         statusCode:String!
         statusDetails: String!,
         payload: [MonthlyReport]
+    }
+    
+    type ReportReqResponse {
+        statusCode:String!
+        statusDetails: String!,
+        payload: PatientReportReq
+    }
+    
+    type PatientReportReq {
+        patient: Patient!
+        pendList: [ReportReq]!
+    }
+    
+    type ReportReq{
+        id: String!
+        name: String!
     }
 
     type MonthlyReport {

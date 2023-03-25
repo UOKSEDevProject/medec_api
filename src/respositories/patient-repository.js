@@ -64,3 +64,18 @@ export const getAppointments = async (id) => {
         },
     ]);
 }
+
+export const addToMedicalHistory = async (pId, doctorRecommendation) => {
+    return await PatientModel.findOneAndUpdate(
+        {_id: pId},
+        {
+            $push: {
+                mediHis: doctorRecommendation,
+            }
+        },
+        {
+            new: true,
+            rawResult: true,
+        }
+    )
+}

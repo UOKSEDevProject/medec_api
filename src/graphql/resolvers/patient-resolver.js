@@ -1,7 +1,10 @@
 import {PatientModel} from "../../database/models/patient-model.js";
 import {findPatientById, getAppointments} from "../../respositories/patient-repository.js";
 import {statusCodes} from "../../constants.js";
-import {findLabReportsByPatientId} from "../../respositories/lab-report-repository.js";
+import {
+    findLabReportsByPatientId,
+    getLabReportRequirementListByStatusAndPatientId
+} from "../../respositories/lab-report-repository.js";
 import {sortArrayBasedOnMonthAndDate} from "../../utils/lab-report-utils.js";
 
 let response = {
@@ -67,6 +70,38 @@ export const patientResolver = {
             response.statusCode = statusCodes.Onsuccess.code;
             response.statusDetails = statusCodes.Onsuccess.details;
             response.payload = results;
+            return response;
+        },
+
+        getPatientReportRequirementList: async (_, args) => {
+            let patient = await findPatientById(args.pId);
+
+            if (patient === null) {
+                response.statusCode = statusCodes.OnNotFound.code;
+                response.statusDetails = statusCodes.OnNotFound.details;
+                response.payload = null;
+                return response;
+            }
+
+            let results = await getLabReportRequirementListByStatusAndPatientId(args.pId);
+
+            let pendList = results?.map(result => {
+                return {
+                    id: result._id,
+                    name: result.name
+                };
+            })
+
+            console.log(results, pendList);
+
+            let payload = {
+                patient: patient,
+                pendList: pendList
+            }
+
+            response.statusCode = statusCodes.Onsuccess.code;
+            response.statusDetails = statusCodes.Onsuccess.details;
+            response.payload = payload;
             return response;
         }
     },

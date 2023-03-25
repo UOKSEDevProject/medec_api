@@ -1,0 +1,43 @@
+{
+  "addPrescription": {
+    "request": {
+      "pId": "String",
+      "dctId": "String",
+      "presImgUrl": "String",
+      "labReqList": [
+        "String"
+      ]
+    },
+    "response": {
+      "statusCode": "String",
+      "statusDetail": "String"
+    }
+  },
+  "qrScan": {
+    "request": {
+      "pId": "String"
+    },
+    "response": {
+      "patient": "Patient",
+      "pendList": [
+        {
+          "id": "String",
+          "name": "String"
+        }
+      ]
+    }
+  },
+  "onRequirementSelection": {
+    "request": {
+      "pId": "String",
+      "lId": "String",
+      "labReqConfirmList": [
+        "String"
+      ]
+    },
+    "response": {
+      "statusCode": "String",
+      "statusDetail": "String"
+    }
+  }
+}

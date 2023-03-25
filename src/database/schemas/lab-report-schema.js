@@ -7,7 +7,6 @@ export const LabReportSchema = new mongoose.Schema({
     },
     lId: {
         type: mongoose.SchemaTypes.String,
-        required: true,
     },
     pId: {
         type: mongoose.SchemaTypes.String,
@@ -15,10 +14,12 @@ export const LabReportSchema = new mongoose.Schema({
     },
     imgPath: {
         type: mongoose.SchemaTypes.String,
-        required: true,
     },
     date: {
         type: mongoose.SchemaTypes.Date,
+    },
+    status: {
+        type: mongoose.SchemaTypes.String,
         required: true,
     }
 });

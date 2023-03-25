@@ -6,11 +6,12 @@ import {
     findDoctorSessionList,
     findDoctorSessionListForChannelCenter
 } from "../../respositories/doctor-repository.js";
-import {statusCodes, mailTexts} from "../../constants.js";
-import constants from "../../constants.js";
+import constants, {labReportStatus, mailTexts, statusCodes} from "../../constants.js";
 import {onCreateHashPassword} from './auth-resolver.js';
 import utils from '../../utils/utils.js';
 import {updateDoctorsArray} from "../../respositories/chan-center-repository.js";
+import {addToMedicalHistory} from "../../respositories/patient-repository.js";
+import {addLabReport} from "../../respositories/lab-report-repository.js";
 
 let response = {
     statusCode: null,
@@ -99,6 +100,39 @@ export const doctorResolver = {
                 response.statusDetails = statusCodes.Onsuccess.details;
                 response.payload = created;
             }
+            return response;
+        },
+
+        addDoctorRecommendation: async (_, args) => {
+            let doctorRecommendation = {
+                date: new Date(),
+                dct: args.doctorRecommendation.dctId,
+                imgPath: args.doctorRecommendation.presImgUrl,
+            }
+
+            await addToMedicalHistory(args.doctorRecommendation.pId, doctorRecommendation);
+
+            await args.doctorRecommendation?.reqList?.forEach(labReq => {
+                let labReport = {
+                    name: labReq,
+                    lId: null,
+                    pId: args.doctorRecommendation.pId,
+                    date: null,
+                    imgPath: null,
+                    status: labReportStatus.PENDING,
+                };
+
+                addLabReport(labReport
+                ).then(res => {
+                    console.log(res);
+                }).catch(err => {
+                    console.log(err.data);
+                })
+            });
+
+            response.statusCode = statusCodes.Onsuccess.code;
+            response.statusDetails = statusCodes.Onsuccess.details;
+
             return response;
         }
     }

@@ -11,6 +11,12 @@ export const doctorDefs = apollo.gql`
     
     type Mutation {
          addDoctor (chId:String!, doctor: DoctorArgs!): Response
+         addDoctorRecommendation(doctorRecommendation: DoctorRecommendation!): StatusResponse
+    }
+    
+    type StatusResponse{
+        statusCode:String!
+        statusDetails: String!,
     }
     
     type Response{
@@ -90,5 +96,12 @@ export const doctorDefs = apollo.gql`
          email: String!
          address: String!
          prfImgUrl: String
+    }
+    
+    input DoctorRecommendation{
+        pId: String!,
+        dctId: String!
+        presImgUrl: String!,
+        reqList: [String]!
     }
 `

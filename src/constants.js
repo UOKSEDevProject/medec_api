@@ -58,4 +58,18 @@ export const mailTexts = {
     MC_REGISTERED_FAIL: 'Your registration is failed in Medec'
 }
 
+export const reports = {
+    FULL_BLOOD_COUNT: "FBC",
+    FASTING_BLOOD_SUGAR: "FBS",
+    URINE_TEST: "URI",
+    CHEST_XRAY: "Chest X-Ray",
+    MRI: "MRI Scan",
+}
+
+export const labReportStatus = {
+    PENDING: "pending",
+    REQUESTED: "requested",
+    COMPLETED: "completed"
+}
+
 export default constants;
