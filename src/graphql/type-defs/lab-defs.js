@@ -7,6 +7,7 @@ export const labDefs = apollo.gql`
     
     type Mutation {
         updateSelectedLabReports(updateLabReportsInput: UpdateLabReportsInput!): StatusResponse
+        updateLabReportsOnCompletion(updateCompletedLabReport: UpdateCompletedLabReport!): StatusResponse
     }
     
     type LapPatientSingleResponse{
@@ -26,8 +27,9 @@ export const labDefs = apollo.gql`
         name: String!
         gender: String!
         birthDate: String!
-        cntNo: String!
-        labReports: [LabReportReq]
+        tp: String!
+        profilePicture: String!
+        reportList: [LabReportReq]
     }
     
     type LabReportReq{
@@ -40,6 +42,17 @@ export const labDefs = apollo.gql`
         pId: String!
         lId: String!
         labReqConfList: [String]!
+    }
+    
+    input UpdateCompletedLabReport {
+        pId: String!
+        lId: String!
+        compLabRepList: [CompletedLabReport]!
+    }
+    
+    input CompletedLabReport {
+        id: String!
+        imgUrl: String!
     }
     
     input LabArgs {
