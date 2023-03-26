@@ -15,6 +15,11 @@ let response = {
 export const labResolver = {
     Query: {
         getLabPatientList: async (_, args) => {
+            try{
+
+            }catch (err){
+
+            }
             let laboratory = await findLaboratoryById(args.lId);
 
             if (laboratory === null) {
@@ -33,37 +38,35 @@ export const labResolver = {
 
     Mutation: {
         updateSelectedLabReports: async (_, args) => {
-            await updateLabReportsOnRequested(
-                args.updateLabReportsInput.pId,
-                args.updateLabReportsInput.lId,
-                args.updateLabReportsInput.labReqConfList
-            ).then(() => {
+            try {
+                await updateLabReportsOnRequested(args.updateLabReportsInput.pId, args.updateLabReportsInput.lId,
+                    args.updateLabReportsInput.labReqConfList);
+
                 response.statusCode = statusCodes.Onsuccess.code;
                 response.statusDetails = statusCodes.Onsuccess.details;
-            }).catch(err => {
+                return response;
+            } catch (err) {
                 response.statusCode = statusCodes.OnUnknownError.code;
                 response.statusDetails = err.message;
-            });
-            return response;
+                return response;
+            }
         },
 
         updateLabReportsOnCompletion: async (_, args) => {
-            let confIdList = args.updateCompletedLabReport.compLabRepList.map(item => item.id);
+            try {
+                let compLabRepList = args.updateCompletedLabReport.compLabRepList;
+                await compLabRepList.forEach(item => {
+                    saveLabReportAfterCompletion(item.id, item.imgUrl);
+                });
 
-            let results = await getLabReportsListInConfirmList(args.updateCompletedLabReport.pId,
-                args.updateCompletedLabReport.lId, confIdList);
-
-            await results.forEach(async item => {
-                let imgUrl = confIdList.filter(confItem => confItem.id === item.id).imgUrl;
-                await saveLabReportAfterCompletion(item._id, imgUrl);
-            }).then(() => {
                 response.statusCode = statusCodes.Onsuccess.code;
                 response.statusDetails = statusCodes.Onsuccess.details;
-            }).catch(err => {
+                return response;
+            } catch (err) {
                 response.statusCode = statusCodes.OnUnknownError.code;
                 response.statusDetails = err.message;
-            });
-            return response;
+                return response;
+            }
         }
     }
 }
