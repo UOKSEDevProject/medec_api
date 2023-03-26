@@ -1,8 +1,7 @@
 import {statusCodes} from "../../constants.js";
 import {
-    getLabReportsListInConfirmList,
-    getPatientListForLaboratory, saveLabReportAfterCompletion,
-    updateLabReportsOnRequested
+    getPatientListForLaboratory,
+    updateLabReportsOnRequested, updateLabReportStatusOnCompletion
 } from "../../respositories/lab-report-repository.js";
 import {findLaboratoryById} from "../../respositories/lab-repository.js";
 
@@ -15,24 +14,25 @@ let response = {
 export const labResolver = {
     Query: {
         getLabPatientList: async (_, args) => {
-            try{
+            try {
+                let laboratory = await findLaboratoryById(args.lId);
 
-            }catch (err){
-
+                if (laboratory === null) {
+                    response.statusCode = statusCodes.OnNotFound.code;
+                    response.statusDetails = statusCodes.OnNotFound.details;
+                    response.payload = null;
+                } else {
+                    let payload = await getPatientListForLaboratory(args.lId);
+                    response.statusCode = statusCodes.Onsuccess.code;
+                    response.statusDetails = statusCodes.Onsuccess.details;
+                    response.payload = payload;
+                }
+                return response;
+            } catch (err) {
+                response.statusCode = statusCodes.OnUnknownError.code;
+                response.statusDetails = err.message;
+                return response;
             }
-            let laboratory = await findLaboratoryById(args.lId);
-
-            if (laboratory === null) {
-                response.statusCode = statusCodes.OnNotFound.code;
-                response.statusDetails = statusCodes.OnNotFound.details;
-                response.payload = null;
-            } else {
-                let payload = await getPatientListForLaboratory(args.lId);
-                response.statusCode = statusCodes.Onsuccess.code;
-                response.statusDetails = statusCodes.Onsuccess.details;
-                response.payload = payload;
-            }
-            return response;
         }
     },
 
@@ -54,11 +54,7 @@ export const labResolver = {
 
         updateLabReportsOnCompletion: async (_, args) => {
             try {
-                let compLabRepList = args.updateCompletedLabReport.compLabRepList;
-                await compLabRepList.forEach(item => {
-                    saveLabReportAfterCompletion(item.id, item.imgUrl);
-                });
-
+                await updateLabReportStatusOnCompletion(args.id, args.imgUrl);
                 response.statusCode = statusCodes.Onsuccess.code;
                 response.statusDetails = statusCodes.Onsuccess.details;
                 return response;

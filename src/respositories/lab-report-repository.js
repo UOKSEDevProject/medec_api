@@ -2,15 +2,27 @@ import {LabReportModel} from "../database/models/lab-report-model.js";
 import {labReportStatus} from "../constants.js";
 
 export const findLabReportsByPatientId = async (pId) => {
-    return await LabReportModel.find({pId: pId}).sort({date: 1});
+    try {
+        return await LabReportModel.find({pId: pId}).sort({date: 1});
+    } catch (err) {
+        throw err;
+    }
 }
 
 export const addLabReport = async (labReport) => {
-    return await LabReportModel.create(labReport);
+    try {
+        return await LabReportModel.create(labReport);
+    } catch (err) {
+        throw err;
+    }
 }
 
 export const getLabReportRequirementListByStatusAndPatientId = async (pId) => {
-    return await LabReportModel.find({pId: pId, status: labReportStatus.PENDING});
+    try {
+        return await LabReportModel.find({pId: pId, status: labReportStatus.PENDING});
+    } catch (err) {
+        throw err;
+    }
 }
 
 export const getPatientListForLaboratory = async (lId) => {
@@ -65,43 +77,45 @@ export const getPatientListForLaboratory = async (lId) => {
             }
         }
     ]
-    return await LabReportModel.aggregate(pipeline);
+
+    try {
+        return await LabReportModel.aggregate(pipeline);
+    } catch (err) {
+        throw err;
+    }
 }
 
 export const updateLabReportsOnRequested = async (pId, lId, reqList) => {
-    await LabReportModel.updateMany(
-        {
-            _id: {$in: reqList},
-            pId: pId
-        },
-        {
-            $set: {
-                lId: lId,
-                status: labReportStatus.REQUESTED
+    try {
+        await LabReportModel.updateMany(
+            {
+                _id: {$in: reqList},
+                pId: pId
+            },
+            {
+                $set: {
+                    lId: lId,
+                    status: labReportStatus.REQUESTED
+                }
             }
-        }
-    );
+        );
+    } catch (err) {
+        throw err;
+    }
 }
 
-export const getLabReportsListInConfirmList = async (pId, lId, confList) => {
-    return await LabReportModel.find(
-        {
-            _id: {$in: confList},
-            pId: pId
-        }
-    );
-}
-
-export const saveLabReportAfterCompletion = async (id, imgUrl) => {
-    await LabReportModel.findOneAndUpdate(
-        {
-            _id: id
-        },
-        {
-            $set: {
-                imgPath: imgUrl,
-                status: labReportStatus.COMPLETED,
+export const updateLabReportStatusOnCompletion = async (id, imgUrl) => {
+    try {
+        return await LabReportModel.findByIdAndUpdate(
+            id,
+            {
+                $set: {
+                    imgPath: imgUrl,
+                    status: labReportStatus.COMPLETED
+                }
             }
-        }
-    );
+        );
+    } catch (err) {
+        throw err;
+    }
 }

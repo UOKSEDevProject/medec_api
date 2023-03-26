@@ -1,6 +1,10 @@
 import apollo from "apollo-server-express";
 
 export const sessionDefs = apollo.gql`
+    type Query {
+        getPatientList(sessionId: String!): SessionApiResponse
+    }
+    
     type Mutation {
         createSession (session: SessionArgs!): SessionApiResponse
         updateSession (sessionId: String!, session: SessionUpdateArgs!): SessionApiResponse

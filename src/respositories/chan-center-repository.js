@@ -1,20 +1,29 @@
 import {ChanCenterModel} from "../database/models/chan-center-model.js";
 
 export const updateDoctorsArray = async (chId, dcId) => {
-    return await ChanCenterModel.findOneAndUpdate(
-        {_id: chId},
-        {
-            $push: {
-                doctors: dcId,
+    try {
+        return await ChanCenterModel.findOneAndUpdate(
+            {_id: chId},
+            {
+                $push: {
+                    doctors: dcId,
+                }
+            },
+            {
+                new: true,
+                rawResult: true,
             }
-        },
-        {
-            new: true,
-            rawResult: true,
-        }
-    );
+        );
+    } catch (err) {
+        throw err;
+    }
+
 }
 
 export const findChanCenterById = async (chId) => {
-    return await ChanCenterModel.findById(chId);
+    try {
+        return await ChanCenterModel.findById(chId);
+    } catch (err) {
+        throw err;
+    }
 }
