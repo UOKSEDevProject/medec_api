@@ -20,7 +20,6 @@ export const labResolver = {
                 response.payload = null;
             } else {
                 let payload = await getPatientListForLaboratory(args.lId);
-                console.log(payload);
                 response.statusCode = statusCodes.Onsuccess.code;
                 response.statusDetails = statusCodes.Onsuccess.details;
                 response.payload = payload;

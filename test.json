@@ -39,5 +39,69 @@
       "statusCode": "String",
       "statusDetail": "String"
     }
+  },
+  "labPatientList": {
+    "request": {
+      "lId": "String",
+    },
+    "response": {
+      "data": {
+        "getLabPatientList": {
+          "statusCode": "S0000",
+          "statusDetails": "Success",
+          "payload": [
+            {
+              "_id": "641ebfbef090531bff9f5e91",
+              "birthDate": "2023-03-09",
+              "cntNo": "+94 776 213 875",
+              "gender": "Male",
+              "labReports": [
+                {
+                  "id": "641ff7bb6c02a7aebd4cc1d6",
+                  "name": "Full Blood Count",
+                  "status": "requested"
+                }
+              ],
+              "name": "Hansa Sandamal"
+            },
+            {
+              "_id": "62c1dbdc8de3254ab1e020c2",
+              "birthDate": "1998-05-08",
+              "cntNo": "0776213875",
+              "gender": "Male",
+              "labReports": [
+                {
+                  "id": "6420001a6bebe05d92aa0a27",
+                  "name": "Fasting Blood Sugar",
+                  "status": "requested"
+                },
+                {
+                  "id": "6420001a6bebe05d92aa0a28",
+                  "name": "Full Blood Count",
+                  "status": "requested"
+                }
+              ],
+              "name": "Charith Wijebandara"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "onReportCompleted": {
+    "request": {
+      "pId": "String",
+      "lId": "String",
+      "labReqConfList": [
+        {
+          "id":"String",
+          "imgUrl": ""
+        }
+      ]
+    },
+    "response": {
+      "statusCode": "String",
+      "statusDetail": "String"
+    }
   }
 }
