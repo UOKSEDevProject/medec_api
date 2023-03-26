@@ -14,7 +14,6 @@ export const getLabReportRequirementListByStatusAndPatientId = async (pId) => {
 }
 
 export const getPatientListForLaboratory = async (lId) => {
-    console.log(lId);
     let pipeline = [
         {
             $match: {
@@ -72,10 +71,8 @@ export const getPatientListForLaboratory = async (lId) => {
 export const updateLabReportsOnRequested = async (pId, lId, reqList) => {
     await LabReportModel.updateMany(
         {
-            $match: {
-                pId: pId,
-                _id: {$in: reqList}
-            }
+            _id: {$in: reqList},
+            pId: pId
         },
         {
             $set: {
