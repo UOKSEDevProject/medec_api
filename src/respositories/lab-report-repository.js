@@ -17,8 +17,7 @@ export const getPatientListForLaboratory = async (lId) => {
     let pipeline = [
         {
             $match: {
-                lId: lId,
-                status: labReportStatus.REQUESTED
+                lId: lId
             }
         },
         {
@@ -60,8 +59,9 @@ export const getPatientListForLaboratory = async (lId) => {
                 name: "$patient.disName",
                 gender: "$patient.sex",
                 birthDate: "$patient.birthDate",
-                cntNo: "$patient.cntNo",
-                labReports: 1
+                tp: "$patient.cntNo",
+                profilePicture: "$patient.prfImgUrl",
+                reportList: "$labReports"
             }
         }
     ]
@@ -78,6 +78,29 @@ export const updateLabReportsOnRequested = async (pId, lId, reqList) => {
             $set: {
                 lId: lId,
                 status: labReportStatus.REQUESTED
+            }
+        }
+    );
+}
+
+export const getLabReportsListInConfirmList = async (pId, lId, confList) => {
+    return await LabReportModel.find(
+        {
+            _id: {$in: confList},
+            pId: pId
+        }
+    );
+}
+
+export const saveLabReportAfterCompletion = async (id, imgUrl) => {
+    await LabReportModel.findOneAndUpdate(
+        {
+            _id: id
+        },
+        {
+            $set: {
+                imgPath: imgUrl,
+                status: labReportStatus.COMPLETED,
             }
         }
     );

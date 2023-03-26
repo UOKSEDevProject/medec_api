@@ -1,6 +1,9 @@
-import {findPatientById} from "../../respositories/patient-repository.js";
 import {statusCodes} from "../../constants.js";
-import {getPatientListForLaboratory, updateLabReportsOnRequested} from "../../respositories/lab-report-repository.js";
+import {
+    getLabReportsListInConfirmList,
+    getPatientListForLaboratory, saveLabReportAfterCompletion,
+    updateLabReportsOnRequested
+} from "../../respositories/lab-report-repository.js";
 import {findLaboratoryById} from "../../respositories/lab-repository.js";
 
 let response = {
@@ -35,6 +38,25 @@ export const labResolver = {
                 args.updateLabReportsInput.lId,
                 args.updateLabReportsInput.labReqConfList
             ).then(() => {
+                response.statusCode = statusCodes.Onsuccess.code;
+                response.statusDetails = statusCodes.Onsuccess.details;
+            }).catch(err => {
+                response.statusCode = statusCodes.OnUnknownError.code;
+                response.statusDetails = err.message;
+            });
+            return response;
+        },
+
+        updateLabReportsOnCompletion: async (_, args) => {
+            let confIdList = args.updateCompletedLabReport.compLabRepList.map(item => item.id);
+
+            let results = await getLabReportsListInConfirmList(args.updateCompletedLabReport.pId,
+                args.updateCompletedLabReport.lId, confIdList);
+
+            await results.forEach(async item => {
+                let imgUrl = confIdList.filter(confItem => confItem.id === item.id).imgUrl;
+                await saveLabReportAfterCompletion(item._id, imgUrl);
+            }).then(() => {
                 response.statusCode = statusCodes.Onsuccess.code;
                 response.statusDetails = statusCodes.Onsuccess.details;
             }).catch(err => {
