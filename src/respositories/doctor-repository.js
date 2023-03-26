@@ -2,11 +2,19 @@ import {DoctorModel} from "../database/models/doctor-model.js";
 import {SessionModel} from "../database/models/session-model.js";
 
 export const createDoctor = async (doctor) => {
-    return await DoctorModel.create(doctor);
+    try {
+        return await DoctorModel.create(doctor);
+    } catch (err) {
+        throw err;
+    }
 }
 
 export const findDoctorByMedicalCouncilNumber = async (id) => {
-    return await DoctorModel.findById(id);
+    try {
+        return await DoctorModel.findById(id);
+    } catch (err) {
+        throw err;
+    }
 }
 
 export const findAllDoctors = async (searchValue, category) => {
@@ -76,18 +84,21 @@ export const findAllDoctors = async (searchValue, category) => {
             specialization: category
         },
     }
+    try {
+        if (searchValue === undefined && category === undefined) {
+            doctors = await DoctorModel.aggregate(pipeline);
+        } else if (searchValue === undefined) {
+            doctors = await DoctorModel.aggregate([...pipeline, categoryFilter]);
+        } else if (category === undefined) {
+            doctors = await DoctorModel.aggregate([...pipeline, searchValueFilter]);
+        } else {
+            doctors = await DoctorModel.aggregate([...pipeline, searchValueFilter, categoryFilter]);
+        }
 
-    if (searchValue === undefined && category === undefined) {
-        doctors = await DoctorModel.aggregate(pipeline);
-    } else if (searchValue === undefined) {
-        doctors = await DoctorModel.aggregate([...pipeline, categoryFilter]);
-    } else if (category === undefined) {
-        doctors = await DoctorModel.aggregate([...pipeline, searchValueFilter]);
-    } else {
-        doctors = await DoctorModel.aggregate([...pipeline, searchValueFilter, categoryFilter]);
+        return doctors;
+    } catch (err) {
+        throw err;
     }
-
-    return doctors;
 }
 
 export const findAllAvailableDoctors = async (searchValue, category) => {
@@ -144,17 +155,21 @@ export const findAllAvailableDoctors = async (searchValue, category) => {
         },
     };
 
-    if (searchValue === undefined && category === undefined) {
-        doctors = await SessionModel.aggregate(pipeline);
-    } else if (searchValue === undefined) {
-        doctors = await SessionModel.aggregate([...pipeline, categoryFilter]);
-    } else if (category === undefined) {
-        doctors = await SessionModel.aggregate([...pipeline, searchValueFilter]);
-    } else {
-        doctors = await SessionModel.aggregate([...pipeline, searchValueFilter, categoryFilter]);
-    }
+    try {
+        if (searchValue === undefined && category === undefined) {
+            doctors = await SessionModel.aggregate(pipeline);
+        } else if (searchValue === undefined) {
+            doctors = await SessionModel.aggregate([...pipeline, categoryFilter]);
+        } else if (category === undefined) {
+            doctors = await SessionModel.aggregate([...pipeline, searchValueFilter]);
+        } else {
+            doctors = await SessionModel.aggregate([...pipeline, searchValueFilter, categoryFilter]);
+        }
 
-    return doctors;
+        return doctors;
+    } catch (err) {
+        throw err;
+    }
 }
 
 export const findDoctorSessionList = async (id) => {
@@ -212,7 +227,11 @@ export const findDoctorSessionList = async (id) => {
         }
     }];
 
-    return await DoctorModel.aggregate(pipeline);
+    try {
+        return await DoctorModel.aggregate(pipeline);
+    } catch (err) {
+        throw err;
+    }
 }
 
 export const findDoctorSessionListForChannelCenter = async (dctId, chId) => {
@@ -261,5 +280,9 @@ export const findDoctorSessionListForChannelCenter = async (dctId, chId) => {
         }
     ]
 
-    return await DoctorModel.aggregate(pipeline);
+    try {
+        return await DoctorModel.aggregate(pipeline);
+    } catch (err) {
+        throw err;
+    }
 }

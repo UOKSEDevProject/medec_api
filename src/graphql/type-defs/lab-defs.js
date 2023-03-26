@@ -7,7 +7,7 @@ export const labDefs = apollo.gql`
     
     type Mutation {
         updateSelectedLabReports(updateLabReportsInput: UpdateLabReportsInput!): StatusResponse
-        updateLabReportsOnCompletion(updateCompletedLabReport: UpdateCompletedLabReport!): StatusResponse
+        updateLabReportsOnCompletion(id: String!, imgUrl: String!): StatusResponse
     }
     
     type LapPatientSingleResponse{

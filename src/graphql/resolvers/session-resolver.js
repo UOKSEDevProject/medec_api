@@ -8,7 +8,7 @@ import {findPatientById} from "../../respositories/patient-repository.js";
 import {
     addAppointmentToSession,
     checkWhetherAlreadyHaveAppointmentForGivenUser,
-    findSessionById
+    findSessionById, getAppointmentsList
 } from "../../respositories/session-repository.js";
 
 let changeStream = undefined;
@@ -33,6 +33,24 @@ let response = {
 };
 
 export const sessionResolver = {
+    Query: {
+        getPatientList: async (_, args) => {
+            try {
+                let payload = await getAppointmentsList(args.sessionId);
+                console.log(payload);
+                response.statusCode = statusCodes.Onsuccess.code;
+                response.statusDetails = statusCodes.Onsuccess.details;
+                response.payload = payload;
+                return response;
+            } catch (err) {
+                response.statusCode = statusCodes.OnUnknownError.code;
+                response.statusDetails = err.message;
+                response.payload = null;
+                return response;
+            }
+        }
+    },
+
     Mutation: {
         createSession: async (_, args) => {
             let doctor = await DoctorModel.findById(args.session.dctId);
