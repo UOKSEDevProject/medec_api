@@ -9,7 +9,7 @@ import {LabModel} from "../../database/models/lab-model.js";
 import utils from "../../utils/utils.js";
 import {withFilter} from "graphql-subscriptions";
 import {apolloServerConnection} from "../../apollo-server-connection.js";
-import {addFcmToken} from "../../respositories/fcm-repository.js";
+import {addFcmToken, findFcmByUsrId, updateFcmToken} from "../../respositories/fcm-repository.js";
 
 const onLoginCallback = async (resolve, reject, args, authType) => {
     let findUsr = await checkUsrInDB(args);
@@ -27,8 +27,14 @@ const matchThePasswords = (resolve, reject, args, result) => {
             if (isPwdMatched) {
                 let data = {usrId: result.usrId, authType: result.type};
                 let token = await utils.createToken(data);
-                if (args.deviceId !== null) {
-                    await addFcmToken(result.usrId, args.deviceId);
+                if (args.deviceId !== undefined && args.deviceId !== null) {
+                    let existingFcm = await findFcmByUsrId(args.usrId);
+
+                    if (existingFcm === null) {
+                        await addFcmToken(result.usrId, args.deviceId);
+                    } else {
+                        await updateFcmToken(result.usrId, args.deviceId);
+                    }
                 }
                 let res = {
                     authSts: constants.authSuccess,
