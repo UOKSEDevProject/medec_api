@@ -9,6 +9,7 @@ import {LabModel} from "../../database/models/lab-model.js";
 import utils from "../../utils/utils.js";
 import {withFilter} from "graphql-subscriptions";
 import {apolloServerConnection} from "../../apollo-server-connection.js";
+import {addFcmToken} from "../../respositories/fcm-repository.js";
 
 const onLoginCallback = async (resolve, reject, args, authType) => {
     let findUsr = await checkUsrInDB(args);
@@ -26,6 +27,9 @@ const matchThePasswords = (resolve, reject, args, result) => {
             if (isPwdMatched) {
                 let data = {usrId: result.usrId, authType: result.type};
                 let token = await utils.createToken(data);
+                if (args.deviceId !== null) {
+                    await addFcmToken(result.usrId, args.deviceId);
+                }
                 let res = {
                     authSts: constants.authSuccess,
                     authType: result.type,
@@ -89,16 +93,16 @@ const onSaveInDB = (args, hash, authType, usrId, resolve) => {
     });
 };
 
-export const onCreateHashPassword = async(args, authType, usrId, resolve) => {
-     //email sender
-     console.log(authType,' ',args,'-args',)
-     if(authType === constants.authTypeChannelCenter){
-        await utils.makePassword().then((password)=>{
+export const onCreateHashPassword = async (args, authType, usrId, resolve) => {
+    //email sender
+    console.log(authType, ' ', args, '-args',)
+    if (authType === constants.authTypeChannelCenter) {
+        await utils.makePassword().then((password) => {
             args.pwd = password;
-            utils.sendEMail(args.usr,mailTexts.MC_REGISTERED_SUCCESSFULLY,`Hi ${args.userArgs.chanCenterArgs.name},
+            utils.sendEMail(args.usr, mailTexts.MC_REGISTERED_SUCCESSFULLY, `Hi ${args.userArgs.chanCenterArgs.name},
             Your password=' ${password} ' and email=' ${args.usr} '`);
-        }).catch(()=>{
-            utils.sendEMail(args.usr,mailTexts.MC_REGISTERED_FAIL,`Hi ${args.userArgs.chanCenterArgs.name},
+        }).catch(() => {
+            utils.sendEMail(args.usr, mailTexts.MC_REGISTERED_FAIL, `Hi ${args.userArgs.chanCenterArgs.name},
             Your Medec registration was not succesfuly completed. Please contact the administration`)
         })
     }
@@ -178,7 +182,7 @@ const onCreatePatient = (args, resolve) => {
     };
 
     PatientModel.create(patient).then((patient) => {
-        utils.sendEMail(args.usr,'Successfully Registered',`Hi ${patient.disName},
+        utils.sendEMail(args.usr, 'Successfully Registered', `Hi ${patient.disName},
         Welcome to Medec (Your online medical assistant)`);
         onCreateHashPassword(args, constants.authTypePatient, patient._id, resolve);
     });
@@ -209,7 +213,9 @@ export const authResolver = {
                 () => {
                     return apolloServerConnection.pubsub.asyncIterator(["AUTH_LISTENER"]);
                 },
-                (payload, args) => {return true}
+                (payload, args) => {
+                    return true
+                }
             )
         }
     }
