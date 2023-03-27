@@ -76,6 +76,7 @@ export const patientDefs = apollo.gql`
     }
 
     type Appointment {
+        _id: String!
         channelCenter: String!
         dctName: String!
         date: String!

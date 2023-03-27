@@ -51,7 +51,7 @@ export const getAppointments = async (id) => {
             },
             {
                 $project: {
-                    _id: 0,
+                    _id: 1,
                     channelCenter: "$channelCenter.name",
                     dctName: "$doctor.disName",
                     date: 1,
