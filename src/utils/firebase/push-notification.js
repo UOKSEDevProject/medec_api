@@ -1,5 +1,6 @@
 import admin from "firebase-admin";
 import {getMessaging} from "firebase-admin/messaging";
+import {getAllTokensForAllUsrIdsInSession} from "../../respositories/session-repository.js";
 
 admin.initializeApp({
     credential: admin.credential.cert({
@@ -19,13 +20,16 @@ admin.initializeApp({
 export const sendPushNotificationToAll = async (title, body, tokens) => {
     try {
         const messages = [];
+
+        console.log(title, body, tokens);
+
         messages.push({
-            notification: {title: 'Price drop', body: '5% off all electronics'},
-            token: "egJDiiH_TpWmgP6wFdb5b2:APA91bEh58UcQzWechYi4NDEO0xnbZ00R6RYrJLVayPLyh050fis3Vg2Juqx5WcWMKqUVO2rMpqoRasbdnGWUs4J-GD5D4Da9Gz8CenNzA8hUugazv-3jqAyQHTLX4-3D8BFXanATvAe",
+            notification: {title: title, body: body},
+            token: tokens,
         });
+
         let result = await getMessaging().sendAll(messages);
         console.log(result);
-        // res.status(200).json({ message: "Successfully sent notifications!" });
         console.log('Successfully sent notifications!');
     } catch (err) {
         console.log(`message: ${err.message} || "Something went wrong 1!"`);
@@ -63,5 +67,34 @@ export const sendPushNotificationAll = async (title, body) => {
         console.log('Successfully sent notifications to all with out token!');
     } catch (err) {
         console.log(`message: ${err.message} || "Something went wrong 3!"`);
+    }
+}
+
+export const sendNotificationsToAllAppointments = async (sessionId, status, curAptNo) => {
+    try {
+        let result = await getAllTokensForAllUsrIdsInSession(sessionId);
+
+        let title = "MEDEC";
+        let body;
+
+        const dctName = result[0].dct_name;
+        const chName = result[0].ch_name;
+        const tokens = result.map(item => {
+            if (item.token !== undefined) {
+                return item.token
+            }
+        });
+
+        if (status === "active") {
+            body = `Dr.${dctName} has arrived at ${chName}`;
+        } else if (status === "ongoing") {
+            body = `Current Appointment Number for Channeling Session with Dr.${dctName}  has arrived: ${curAptNo}`;
+        } else if (status === "finished") {
+            body = `Dr.${dctName} left the ${chName}`;
+        }
+
+        await sendPushNotificationToAll(title, body, tokens);
+    } catch (err) {
+        console.log(`message: ${err.message} || "Something went wrong 1!"`);
     }
 }

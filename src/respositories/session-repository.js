@@ -110,7 +110,7 @@ export const getAppointmentList = async (sessionId) => {
         {
             $project: {
                 aptId: "$aptId",
-                pId: "$patient._id",
+                _id: "$patient._id",
                 name: "$patient.disName",
                 cntNo: "$patient.cntNo",
                 bloodGroup: "$patient.bldGrp",
@@ -130,7 +130,6 @@ export const getAppointmentList = async (sessionId) => {
 }
 
 export const updateSession = async (sessionId, status, curAptNo, aptId) => {
-    console.log(sessionId, aptId);
     try {
         return await SessionModel.findOneAndUpdate(
             {
@@ -145,9 +144,127 @@ export const updateSession = async (sessionId, status, curAptNo, aptId) => {
                 },
             },
             {
-                new: true
+                new: true,
+                rawResult: true
             }
         );
+    } catch (err) {
+        throw err;
+    }
+}
+
+export const getAllTokensForAllUsrIdsInSession = async (sessionId) => {
+    let pipeline = [
+        {
+            $addFields: {
+                _id: {
+                    $toString: "$_id"
+                },
+            }
+        },
+        {
+            $match: {
+                _id: sessionId,
+            }
+        },
+        {
+            $unwind: "$apts"
+        },
+        {
+            $project: {
+                chId: 1,
+                dctId: 1,
+                pId: "$apts.pId"
+            }
+        },
+        {
+            $lookup: {
+                from: "fcms",
+                localField: "pId",
+                foreignField: "usrId",
+                pipeline: [
+                    {
+                        $project: {
+                            _id: 0,
+                            token: 1
+                        }
+                    }
+                ],
+                as: "token",
+            }
+        },
+        {
+            $set: {
+                token: {
+                    $arrayElemAt: ["$token", 0],
+                },
+            }
+        },
+        {
+            $lookup: {
+                from: "doctors",
+                localField: "dctId",
+                foreignField: "_id",
+                pipeline: [
+                    {
+                        $project: {
+                            _id: 0,
+                            disName: 1
+                        }
+                    }
+                ],
+                as: "doctor",
+            }
+        },
+        {
+            $set: {
+                dct: {
+                    $arrayElemAt: ["$doctor", 0],
+                },
+            }
+        },
+        {
+            $addFields: {
+                chId: {
+                    $toObjectId: "$chId"
+                },
+            }
+        },
+        {
+            $lookup: {
+                from: "chan_centers",
+                localField: "chId",
+                foreignField: "_id",
+                pipeline: [
+                    {
+                        $project: {
+                            _id: 0,
+                            name: 1
+                        }
+                    }
+                ],
+                as: "chan_center",
+            }
+        },
+        {
+            $set: {
+                ch: {
+                    $arrayElemAt: ["$chan_center", 0],
+                },
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                token: "$token.token",
+                dct_name: "$dct.disName",
+                ch_name: "$ch.name"
+            }
+        }
+    ]
+
+    try {
+        return await SessionModel.aggregate(pipeline);
     } catch (err) {
         throw err;
     }
