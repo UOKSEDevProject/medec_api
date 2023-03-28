@@ -31,7 +31,7 @@ export const sessionDefs = apollo.gql`
     
     type PatientListObject{
         _id: ID
-        disName: String
+        name: String
         bloodGroup: String
         birthDate: String
         address: String

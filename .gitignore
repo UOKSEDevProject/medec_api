@@ -3,3 +3,7 @@ node_modules
 .idea/
 package-lock.json
 ./src/utils/firebase/firebase.json
+.dockerignore
+Dockerfile
+docker-compose.yml
+.gitignore
