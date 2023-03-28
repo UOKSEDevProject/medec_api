@@ -8,7 +8,7 @@ import {findPatientById} from "../../respositories/patient-repository.js";
 import {
     addAppointmentToSession,
     checkWhetherAlreadyHaveAppointmentForGivenUser,
-    findSessionById, getAppointmentList
+    findSessionById, getAppointmentList, updateSession
 } from "../../respositories/session-repository.js";
 
 let changeStream = undefined;
@@ -191,6 +191,21 @@ export const sessionResolver = {
             )
 
             return updated.value;
+        },
+
+        updateSessionStatus: async (_, args) => {
+            console.log(args);
+            try {
+                let result = await updateSession(args.sessionId, args.status, args.curAptNo, args.aptId);
+                response.statusCode = statusCodes.Onsuccess.code;
+                response.statusDetails = statusCodes.Onsuccess.details;
+                console.log(result);
+                return response;
+            } catch (err) {
+                response.statusCode = statusCodes.OnUnknownError.code;
+                response.statusDetails = err.message;
+                return response;
+            }
         }
     },
 

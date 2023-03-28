@@ -1,4 +1,5 @@
 import {SessionModel} from "../database/models/session-model.js";
+import {sessionStatus} from "../constants.js";
 
 export const findSessionById = async (id) => {
     try {
@@ -80,7 +81,7 @@ export const getAppointmentList = async (sessionId) => {
         },
         {
             $project: {
-                _id: 0,
+                aptId: "$apts._id",
                 pId: "$apts.pId"
             }
         },
@@ -108,8 +109,10 @@ export const getAppointmentList = async (sessionId) => {
         },
         {
             $project: {
-                _id: "$patient._id",
+                aptId: "$aptId",
+                pId: "$patient._id",
                 name: "$patient.disName",
+                cntNo: "$patient.cntNo",
                 bloodGroup: "$patient.bldGrp",
                 birthDate: "$patient.birthDate",
                 address: "$patient.address",
@@ -121,6 +124,30 @@ export const getAppointmentList = async (sessionId) => {
 
     try {
         return await SessionModel.aggregate(pipeline);
+    } catch (err) {
+        throw err;
+    }
+}
+
+export const updateSession = async (sessionId, status, curAptNo, aptId) => {
+    console.log(sessionId, aptId);
+    try {
+        return await SessionModel.findOneAndUpdate(
+            {
+                _id: sessionId,
+                "apts._id": aptId
+            },
+            {
+                status: status,
+                curAptNo: curAptNo,
+                $set: {
+                    "apts.$.activeSt": sessionStatus.FINISHED,
+                },
+            },
+            {
+                new: true
+            }
+        );
     } catch (err) {
         throw err;
     }
