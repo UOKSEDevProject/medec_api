@@ -61,7 +61,7 @@ export const checkWhetherAlreadyHaveAppointmentForGivenUser = async (sessionId, 
     }
 }
 
-export const getAppointmentsList = async (sessionId) => {
+export const getAppointmentList = async (sessionId) => {
     let pipeline = [
         {
             $addFields: {
@@ -109,7 +109,7 @@ export const getAppointmentsList = async (sessionId) => {
         {
             $project: {
                 _id: "$patient._id",
-                disName: "$patient.disName",
+                name: "$patient.disName",
                 bloodGroup: "$patient.bldGrp",
                 birthDate: "$patient.birthDate",
                 address: "$patient.address",

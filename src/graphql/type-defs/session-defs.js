@@ -2,7 +2,7 @@ import apollo from "apollo-server-express";
 
 export const sessionDefs = apollo.gql`
     type Query {
-        getPatientList(sessionId: String!): SessionApiResponse
+        getPatientList(sessionId: String!): PatientListApiResponse
     }
     
     type Mutation {
@@ -21,6 +21,22 @@ export const sessionDefs = apollo.gql`
         statusCode:String!
         statusDetails: String!,
         payload: Session
+    }
+    
+    type PatientListApiResponse {
+        statusCode:String!
+        statusDetails: String!,
+        payload: [PatientListObject]
+    }
+    
+    type PatientListObject{
+        _id: ID
+        disName: String
+        bloodGroup: String
+        birthDate: String
+        address: String
+        description: String
+        prfImgUrl: String
     }
   
     type Session {

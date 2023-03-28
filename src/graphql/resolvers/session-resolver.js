@@ -8,7 +8,7 @@ import {findPatientById} from "../../respositories/patient-repository.js";
 import {
     addAppointmentToSession,
     checkWhetherAlreadyHaveAppointmentForGivenUser,
-    findSessionById, getAppointmentsList
+    findSessionById, getAppointmentList
 } from "../../respositories/session-repository.js";
 
 let changeStream = undefined;
@@ -36,8 +36,7 @@ export const sessionResolver = {
     Query: {
         getPatientList: async (_, args) => {
             try {
-                let payload = await getAppointmentsList(args.sessionId);
-                console.log(payload);
+                let payload = await getAppointmentList(args.sessionId);
                 response.statusCode = statusCodes.Onsuccess.code;
                 response.statusDetails = statusCodes.Onsuccess.details;
                 response.payload = payload;
