@@ -173,27 +173,6 @@ export const sessionResolver = {
             }
         },
 
-        updateAptSts: async (_, args) => {
-            let updated = await SessionModel.findOneAndUpdate(
-                {
-                    _id: args.sessionId,
-                    "apts._id": args.aptId
-                },
-                {
-                    $set: {
-                        "apts.$.activeSt": args.sts,
-                    },
-                    $inc: {curAptNo: 1}
-                },
-                {
-                    new: true,
-                    rawResult: true
-                }
-            )
-
-            return updated.value;
-        },
-
         updateSessionStatus: async (_, args) => {
             try {
                 let result = await updateSession(args.sessionId, args.status, args.curAptNo, args.aptId);

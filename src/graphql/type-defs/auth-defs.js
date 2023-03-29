@@ -3,7 +3,7 @@ import apollo from "apollo-server-express";
 export const authDefs = apollo.gql`
     type Mutation {
         login (usr: String!, pwd: String!, deviceId: String): Login
-        register (usr: String!, pwd: String!, userArgs: UserArgs): Login
+        register (usr: String!, pwd: String!, userArgs: UserArgs,  type: String): Login
     }
     
     type Subscription {
@@ -23,6 +23,5 @@ export const authDefs = apollo.gql`
         doctorArgs: DoctorArgs
         patientArgs: PatientArgs
         labArgs: LabArgs
-        type: String
     }
 `;

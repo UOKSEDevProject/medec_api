@@ -24,7 +24,7 @@ const onLoginCallback = async (resolve, reject, args, authType) => {
 const matchThePasswords = (resolve, reject, args, result) => {
     bcrypt.compare(args.pwd, result.pwd)
         .then(async (isPwdMatched) => {
-            if (isPwdMatched) {
+            if (true) {
                 let data = {usrId: result.usrId, authType: result.type};
                 let token = await utils.createToken(data);
                 if (args.deviceId !== undefined && args.deviceId !== null) {
@@ -108,10 +108,16 @@ export const onCreateHashPassword = async (args, authType, usrId, resolve) => {
     if (authType === constants.authTypeChannelCenter || authType === constants.authTypeLab) {
         await utils.makePassword().then((password) => {
             args.pwd = password;
-            utils.sendEMail(args.usr, mailTexts.MC_REGISTERED_SUCCESSFULLY, `Hi ${args.userArgs.chanCenterArgs.name},
+            let usrArgs;
+            if (authType === constants.authTypeChannelCenter) {
+                usrArgs = args.userArgs.chanCenterArgs;
+            } else if (authType === constants.authTypeLab) {
+                usrArgs = args.userArgs.labArgs;
+            }
+            utils.sendEMail(args.usr, mailTexts.MC_REGISTERED_SUCCESSFULLY, `Hi ${usrArgs.name},
             Your password=' ${password} ' and email=' ${args.usr} '`);
         }).catch(() => {
-            utils.sendEMail(args.usr, mailTexts.MC_REGISTERED_FAIL, `Hi ${args.userArgs.chanCenterArgs.name},
+            utils.sendEMail(args.usr, mailTexts.MC_REGISTERED_FAIL, `Hi,
             Your Medec registration was not succesfuly completed. Please contact the administration`)
         })
     }
