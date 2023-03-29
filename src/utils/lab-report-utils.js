@@ -5,6 +5,7 @@ export const sortArrayBasedOnMonthAndDate = async (items) => {
 
     let startDate = new Date();
     let endDate = new Date();
+    startDate.setDate(1);
     endDate.setMonth(startDate.getMonth() - 12);
 
     while (startDate > endDate) {
@@ -25,11 +26,10 @@ export const sortArrayBasedOnMonthAndDate = async (items) => {
                 monthlyRecords.reports.push(newReport);
             }
         })
-
         results.push(monthlyRecords);
         startDate.setMonth(startDate.getMonth() - 1);
     }
-
+    console.log(results);
     return results;
 }
 
