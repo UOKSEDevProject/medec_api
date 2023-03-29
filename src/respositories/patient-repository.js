@@ -146,9 +146,18 @@ export const addToMedicalHistory = async (pId, doctorRecommendation) => {
     }
 }
 
-export const findPatientByIdAndReplace = async (pId, patient) => {
+export const findPatientByIdAndUpdate = async (pId, patient) => {
     try {
-        return await PatientModel.findOneAndReplace({_id: pId}, patient);
+        return await PatientModel.findOneAndUpdate(
+            {
+                _id: pId
+            },
+            patient,
+            {
+                new: true,
+                rawResult: true
+            }
+        );
     } catch (err) {
         throw err;
     }

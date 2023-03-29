@@ -1,7 +1,6 @@
-import {PatientModel} from "../../database/models/patient-model.js";
 import {
     findPatientById,
-    findPatientByIdAndReplace,
+    findPatientByIdAndUpdate,
     findPatientMediHistoryById,
     getAppointments
 } from "../../respositories/patient-repository.js";
@@ -142,7 +141,17 @@ export const patientResolver = {
     Mutation: {
         updatePatient: async (_, args) => {
             try {
-                await findPatientByIdAndReplace(args.pId, args.patient);
+                let result = await findPatientByIdAndUpdate(args.pId, args.patient);
+                if (result.lastErrorObject.updatedExisting) {
+                    response.statusCode = statusCodes.Onsuccess.code;
+                    response.statusDetails = statusCodes.Onsuccess.details;
+                    response.payload = null;
+                } else {
+                    response.statusCode = statusCodes.OnNotFound.code;
+                    response.statusDetails = statusCodes.OnNotFound.details;
+                    response.payload = null;
+                }
+                return response;
             } catch (err) {
                 response.statusCode = statusCodes.OnUnknownError.code;
                 response.statusDetails = err.message;
