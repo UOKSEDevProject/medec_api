@@ -21,7 +21,6 @@ export const addFcmToken = async (usrId, token) => {
 }
 
 export const updateFcmToken = async (usrId, token) => {
-    console.log(usrId, token);
     try {
         await FirebaseTokenModel.findOneAndUpdate(
             {usrId: usrId},
