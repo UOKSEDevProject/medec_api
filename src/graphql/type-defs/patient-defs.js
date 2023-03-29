@@ -11,6 +11,7 @@ export const patientDefs = apollo.gql`
 
     type Mutation {
         addPatient (patient: PatientArgs!): Patient
+        updatePatient (pId:String!, patient: PatientUpdateArgs!): Patient
     }
     
     type PatientResponse{
@@ -97,5 +98,18 @@ export const patientDefs = apollo.gql`
         des: String!
         sex: String!
         cntNo: String!
+    }
+    
+    input PatientUpdateArgs {
+        fullName: String
+        disName: String
+        nameWithInitials: String
+        prfImgUrl: String
+        address: String
+        birthDate: String
+        bldGrp: String
+        des: String
+        sex: String
+        cntNo: String
     }
 `
