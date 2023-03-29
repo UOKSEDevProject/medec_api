@@ -46,7 +46,7 @@ export const statusCodes = {
 }
 
 export const sessionStatus = {
-    NOT_STARTED: "not started",
+    NOT_STARTED: "not-started",
     ACTIVE: "active",
     FINISHED: "finished"
 }

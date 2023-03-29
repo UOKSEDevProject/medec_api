@@ -8,6 +8,7 @@ export const sessionDefs = apollo.gql`
     type Mutation {
         createSession (session: SessionArgs!): SessionApiResponse
         updateSession (sessionId: String!, session: SessionUpdateArgs!): SessionApiResponse
+        updateSessionStatus (sessionId: String!, status: String!, curAptNo: Int!, aptId: String!): StatusResponse
         deleteSession (sessionId: String!): SessionApiResponse
         addAppointment (sessionId: String!, pId: String!): SessionApiResponse
         updateAptSts (sessionId: String!, aptId: String!, sts: String!): Session
@@ -30,7 +31,8 @@ export const sessionDefs = apollo.gql`
     }
     
     type PatientListObject{
-        _id: ID
+        _id: String
+        aptId: String
         name: String
         bloodGroup: String
         birthDate: String

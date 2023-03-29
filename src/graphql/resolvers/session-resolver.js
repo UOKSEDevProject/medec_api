@@ -8,8 +8,9 @@ import {findPatientById} from "../../respositories/patient-repository.js";
 import {
     addAppointmentToSession,
     checkWhetherAlreadyHaveAppointmentForGivenUser,
-    findSessionById, getAppointmentList
+    findSessionById, getAppointmentList, updateSession
 } from "../../respositories/session-repository.js";
+import {sendNotificationsToAllAppointments} from "../../utils/firebase/push-notification.js";
 
 let changeStream = undefined;
 let pipeline = undefined;
@@ -191,6 +192,28 @@ export const sessionResolver = {
             )
 
             return updated.value;
+        },
+
+        updateSessionStatus: async (_, args) => {
+            try {
+                let result = await updateSession(args.sessionId, args.status, args.curAptNo, args.aptId);
+
+                if (result.lastErrorObject.updatedExisting) {
+                    await sendNotificationsToAllAppointments(args.sessionId, args.status, args.curAptNo);
+                    response.statusCode = statusCodes.Onsuccess.code;
+                    response.statusDetails = statusCodes.Onsuccess.details;
+                    response.payload = null;
+                } else {
+                    response.statusCode = statusCodes.OnNotFound.code;
+                    response.statusDetails = statusCodes.OnNotFound.details;
+                    response.payload = null;
+                }
+                return response;
+            } catch (err) {
+                response.statusCode = statusCodes.OnUnknownError.code;
+                response.statusDetails = err.message;
+                return response;
+            }
         }
     },
 
