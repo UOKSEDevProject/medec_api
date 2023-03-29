@@ -78,12 +78,11 @@ const onCreateUserProfile = (args, authType, resolve) => {
     } else if (authType === constants.authTypeLab) {
         onCreateLab(args, resolve);
     } else if (authType === constants.authTypeAdmin) {
-        if (args.type === "ChannelCenter") {
+        if (args.userArgs.type === "ChannelCenter") {
             onCreateChannelCenter(args, resolve);
-        } else if (args.type === "Laboratory") {
+        } else if (args.userArgs.type === "Laboratory") {
             onCreateLab(args, resolve);
         }
-
     } else if (authType === constants.authTypePatient) {
         onCreatePatient(args, resolve);
     } else if (authType === constants.authTypeChannelCenter) {
