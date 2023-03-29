@@ -1,5 +1,5 @@
 import {PatientModel} from "../../database/models/patient-model.js";
-import {findPatientById, getAppointments} from "../../respositories/patient-repository.js";
+import {findPatientById, findPatientMediHistoryById, getAppointments} from "../../respositories/patient-repository.js";
 import {statusCodes} from "../../constants.js";
 import {
     findLabReportsByPatientId,
@@ -56,21 +56,32 @@ export const patientResolver = {
         },
 
         getMedicalReportList: async (_, args) => {
-            let patient = await findPatientById(args.pId);
+            try {
 
-            if (patient === null) {
-                response.statusCode = statusCodes.OnNotFound.code;
-                response.statusDetails = statusCodes.OnNotFound.details;
+                let patient = await findPatientById(args.pId);
+                if (patient === null) {
+                    response.statusCode = statusCodes.OnNotFound.code;
+                    response.statusDetails = statusCodes.OnNotFound.details;
+                    response.payload = null;
+                    return response;
+                }
+                let medicalReports = await findPatientMediHistoryById(args.pId);
+
+                console.log(medicalReports);
+
+                let results = sortArrayBasedOnMonthAndDate(medicalReports);
+
+                response.statusCode = statusCodes.Onsuccess.code;
+                response.statusDetails = statusCodes.Onsuccess.details;
+                response.payload = results;
+                return response;
+            } catch (err) {
+                console.log(err);
+                response.statusCode = statusCodes.OnUnknownError.code;
+                response.statusDetails = statusCodes.OnUnknownError.details;
                 response.payload = null;
                 return response;
             }
-
-            let results = sortArrayBasedOnMonthAndDate(patient.mediHis);
-
-            response.statusCode = statusCodes.Onsuccess.code;
-            response.statusDetails = statusCodes.Onsuccess.details;
-            response.payload = results;
-            return response;
         },
 
         getPatientReportRequirementList: async (_, args) => {

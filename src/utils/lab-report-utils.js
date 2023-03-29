@@ -1,4 +1,6 @@
-export const sortArrayBasedOnMonthAndDate = (items) => {
+import {findDoctorByMedicalCouncilNumber} from "../respositories/doctor-repository.js";
+
+export const sortArrayBasedOnMonthAndDate = async (items) => {
     const results = [];
 
     let startDate = new Date();
@@ -11,7 +13,7 @@ export const sortArrayBasedOnMonthAndDate = (items) => {
             reports: []
         }
 
-        items.forEach(item => {
+        await items.forEach(item => {
             if (item.date.getMonth() === startDate.getMonth() && item.date.getFullYear()) {
                 let newReport = {
                     id: item._id,

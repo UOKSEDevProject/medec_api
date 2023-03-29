@@ -2,7 +2,7 @@ import apollo from "apollo-server-express";
 
 export const authDefs = apollo.gql`
     type Mutation {
-        login (usr: String!, pwd: String!, deviceId: String): Login
+        login (usr: String!, pwd: String!, deviceId: String, type: String): Login
         register (usr: String!, pwd: String!, userArgs: UserArgs): Login
     }
     
