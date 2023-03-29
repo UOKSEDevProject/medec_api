@@ -55,7 +55,9 @@ export const mailTexts = {
     DOCTOR_REGISTERED_SUCCESSFULLY: 'You are registered as a Doctor in Medec',
     DOCTOR_REGISTERED_FAIL: 'Your registration is failed in Medec',
     MC_REGISTERED_SUCCESSFULLY: 'You are registered as a Channel Center in Medec',
-    MC_REGISTERED_FAIL: 'Your registration is failed in Medec'
+    MC_REGISTERED_FAIL: 'Your registration is failed in Medec',
+    LAB_REGISTERED_SUCCESSFULLY: 'You are registered as a Laboratory in Medec',
+    LAB_REGISTERED_FAIL: 'Your registration is failed in Medec',
 }
 
 export const reports = {
