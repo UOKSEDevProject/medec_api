@@ -24,7 +24,7 @@ const onLoginCallback = async (resolve, reject, args, authType) => {
 const matchThePasswords = (resolve, reject, args, result) => {
     bcrypt.compare(args.pwd, result.pwd)
         .then(async (isPwdMatched) => {
-            if (true) {
+            if (isPwdMatched) {
                 let data = {usrId: result.usrId, authType: result.type};
                 let token = await utils.createToken(data);
                 if (args.deviceId !== undefined && args.deviceId !== null) {
