@@ -9,6 +9,60 @@ export const findPatientById = async (id) => {
     }
 }
 
+export const findPatientMediHistoryById = async (id) => {
+    try {
+        return await PatientModel.aggregate([
+            {
+                $addFields: {
+                    _id: {
+                        $toString: "$_id"
+                    },
+                }
+            },
+            {
+                $match: {
+                    _id: id
+                }
+            },
+            {
+                $unwind: "$mediHis"
+            },
+            {
+                $project: {
+                    _id: 0,
+                    id: "$mediHis._id",
+                    dct: "$mediHis.dct",
+                    date: "$mediHis.date",
+                    imgPath: "$mediHis.imgPath"
+                }
+            },
+            {
+                $lookup: {
+                    from: "doctors",
+                    localField: "dct",
+                    foreignField: "_id",
+                    as: "doctor"
+                }
+            },
+            {
+                $set: {
+                    doctor: {$arrayElemAt: ["$doctor", 0],}
+                }
+            },
+            {
+                $project: {
+                    _id: "$id",
+                    date: "$date",
+                    imgPath: "$imgPath",
+                    name: "$doctor.disName"
+                }
+            }
+        ]);
+    } catch (err) {
+        throw err;
+    }
+}
+
 export const getAppointments = async (id) => {
     try {
         return await SessionModel.aggregate([
