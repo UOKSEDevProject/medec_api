@@ -78,7 +78,12 @@ const onCreateUserProfile = (args, authType, resolve) => {
     } else if (authType === constants.authTypeLab) {
         onCreateLab(args, resolve);
     } else if (authType === constants.authTypeAdmin) {
-        onCreateChannelCenter(args, resolve);
+        if (args.type === "ChannelCenter") {
+            onCreateChannelCenter(args, resolve);
+        } else if (args.type === "Laboratory") {
+            onCreateLab(args, resolve);
+        }
+
     } else if (authType === constants.authTypePatient) {
         onCreatePatient(args, resolve);
     } else if (authType === constants.authTypeChannelCenter) {
@@ -101,8 +106,7 @@ const onSaveInDB = (args, hash, authType, usrId, resolve) => {
 
 export const onCreateHashPassword = async (args, authType, usrId, resolve) => {
     //email sender
-    console.log(authType, ' ', args, '-args',)
-    if (authType === constants.authTypeChannelCenter) {
+    if (authType === constants.authTypeChannelCenter || authType === constants.authTypeLab) {
         await utils.makePassword().then((password) => {
             args.pwd = password;
             utils.sendEMail(args.usr, mailTexts.MC_REGISTERED_SUCCESSFULLY, `Hi ${args.userArgs.chanCenterArgs.name},
