@@ -29,7 +29,6 @@ export const sortArrayBasedOnMonthAndDate = async (items) => {
         results.push(monthlyRecords);
         startDate.setMonth(startDate.getMonth() - 1);
     }
-    console.log(results);
     return results;
 }
 
