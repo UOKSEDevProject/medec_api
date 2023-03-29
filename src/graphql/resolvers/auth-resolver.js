@@ -78,9 +78,9 @@ const onCreateUserProfile = (args, authType, resolve) => {
     } else if (authType === constants.authTypeLab) {
         onCreateLab(args, resolve);
     } else if (authType === constants.authTypeAdmin) {
-        if (args.userArgs.type === "ChannelCenter") {
+        if (args.type === "ChannelCenter") {
             onCreateChannelCenter(args, resolve);
-        } else if (args.userArgs.type === "Laboratory") {
+        } else if (args.type === "Laboratory") {
             onCreateLab(args, resolve);
         }
     } else if (authType === constants.authTypePatient) {
@@ -114,7 +114,7 @@ export const onCreateHashPassword = async (args, authType, usrId, resolve) => {
             } else if (authType === constants.authTypeLab) {
                 usrArgs = args.userArgs.labArgs;
             }
-            utils.sendEMail(args.usr, mailTexts.MC_REGISTERED_SUCCESSFULLY, `Hi ${usrArgs.name},
+            utils.sendEMail(args.usr, authType === constants.authTypeChannelCenter ? mailTexts.MC_REGISTERED_SUCCESSFULLY : mailTexts.LAB_REGISTERED_SUCCESSFULLY, `Hi ${usrArgs.name},
             Your password=' ${password} ' and email=' ${args.usr} '`);
         }).catch(() => {
             utils.sendEMail(args.usr, mailTexts.MC_REGISTERED_FAIL, `Hi,
