@@ -21,15 +21,13 @@ export const sendPushNotificationToAll = async (title, body, tokens) => {
     try {
         const messages = [];
 
-        console.log(title, body, tokens);
-
-        messages.push({
-            notification: {title: title, body: body},
-            token: tokens,
-        });
-
-        let result = await getMessaging().sendAll(messages);
-        console.log(result);
+        await tokens.forEach(token => {
+            messages.push({
+                notification: {title: title, body: body},
+                token: token,
+            });
+            getMessaging().sendAll(messages);
+        })
         console.log('Successfully sent notifications!');
     } catch (err) {
         console.log(`message: ${err.message} || "Something went wrong 1!"`);
@@ -79,21 +77,18 @@ export const sendNotificationsToAllAppointments = async (sessionId, status, curA
 
         const dctName = result[0].dct_name;
         const chName = result[0].ch_name;
-        const tokens = result.map(item => {
-            if (item.token !== undefined) {
-                return item.token
-            }
-        });
+        const tokens = result?.map(item => item?.token);
+        const validTokens = tokens?.filter(item => item !== undefined);
 
         if (status === "active") {
             body = `Dr.${dctName} has arrived at ${chName}`;
         } else if (status === "ongoing") {
-            body = `Current Appointment Number for Channeling Session with Dr.${dctName}  has arrived: ${curAptNo}`;
+            body = `Current Appointment Number for Channeling Session with Dr.${dctName}: ${curAptNo}`;
         } else if (status === "finished") {
             body = `Dr.${dctName} left the ${chName}`;
         }
 
-        await sendPushNotificationToAll(title, body, tokens);
+        await sendPushNotificationToAll(title, body, validTokens);
     } catch (err) {
         console.log(`message: ${err.message} || "Something went wrong 1!"`);
     }

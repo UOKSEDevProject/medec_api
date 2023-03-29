@@ -34,6 +34,7 @@ export const sessionDefs = apollo.gql`
         _id: String
         aptId: String
         name: String
+        cntNo: String
         bloodGroup: String
         birthDate: String
         address: String

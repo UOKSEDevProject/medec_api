@@ -28,9 +28,9 @@ const matchThePasswords = (resolve, reject, args, result) => {
                 let data = {usrId: result.usrId, authType: result.type};
                 let token = await utils.createToken(data);
                 if (args.deviceId !== undefined && args.deviceId !== null) {
-                    let existingFcm = await findFcmByUsrId(args.usrId);
+                    let existingFcm = await findFcmByUsrId(result.usrId);
 
-                    if (existingFcm === null) {
+                    if (existingFcm.length === 0) {
                         await addFcmToken(result.usrId, args.deviceId);
                     } else {
                         await updateFcmToken(result.usrId, args.deviceId);
